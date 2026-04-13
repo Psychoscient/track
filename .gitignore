@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.env
+# If you are using Tailwind v4, ignore the output file if you don't want it in Git
+output.css
+package.json
+package-lock.json
