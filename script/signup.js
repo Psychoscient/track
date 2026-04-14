@@ -1,5 +1,14 @@
 document.addEventListener('DOMContentLoaded', function() {
     const submit = document.getElementById('submit');
+    const fname = document.getElementById('fname');
+    const lname = document.getElementById('lname');
+    const email = document.getElementById('email');
+    const password = document.getElementById('password');
+    const yearlvl = document.getElementById('yearlvl');
+
+    const fields = [fname, lname];
+
+    Utils.keydown(fields);
 
     submit.addEventListener('click', function(e) {
         e.preventDefault();
@@ -8,11 +17,11 @@ document.addEventListener('DOMContentLoaded', function() {
             url: '../controllers/controller.php',
             type: 'POST',
             data: {
-                fname: document.getElementById('fname').value,
-                lname: document.getElementById('lname').value,
-                email: document.getElementById('email').value,
-                password: document.getElementById('password').value,
-                yearlvl: document.getElementById('yearlvl').value,
+                fname: fname.value,
+                lname: lname.value,
+                email: email.value,
+                password: password.value,
+                yearlvl: yearlvl.value,
                 action: 'signup'
             },
             success: function(response) {
