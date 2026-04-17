@@ -17,7 +17,7 @@
     <title>Login</title>
 </head>
 
-<body class="min-h-screen flex flex-col bg-gradient-to-br from-indigo-100 via-white to-blue-100">
+<body class="min-h-screen flex flex-col bg-linear-to-br from-indigo-100 via-white to-blue-100">
 
     <!-- Main Content -->
     <div class="grow flex items-center justify-center px-4 py-10">

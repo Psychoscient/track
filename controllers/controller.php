@@ -56,6 +56,17 @@
                 echo json_encode($result);
                 break;
             
+            case 'create':
+                $result = $auth -> createUser($data['fname'], 
+                                              $data['lname'], 
+                                              $data['email'], 
+                                              $data['password'], 
+                                              $data['yearlvl'],
+                                              $data['role']);
+
+                echo json_encode($result);
+                break;
+            
             case 'update':
                 $result = $auth -> updateUser($data['userID'], 
                                               $data['fname'], 

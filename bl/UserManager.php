@@ -23,6 +23,11 @@
             return $response -> fetchAll(PDO::FETCH_ASSOC);
         }
 
+        public function getTotalUsers() {
+            $response = $this -> userModel -> readTotalUsers();
+            return $response -> fetch(PDO::FETCH_ASSOC);
+        }
+
         public function getUserByEmail($email) {
             $response = $this -> userModel -> searchUser($email);
             return $response;
@@ -30,6 +35,8 @@
 
         public function addUser($fname, $lname, $email, $password, $yearlvl) {
             try {
+                $role = 2;
+
                 if (empty($fname) || empty($lname) || empty($email) || empty($password) || empty($yearlvl)) {
                     return [
                         "status" => false,
@@ -44,7 +51,7 @@
                     ];
                 }
 
-                if ($this -> userModel -> createUser($fname, $lname, $email, $password, $yearlvl)) {
+                if ($this -> userModel -> createUser($fname, $lname, $email, $password, $yearlvl, $role)) {
                     return [
                         "status" => true,
                         "message" => "User created successfully."
@@ -87,6 +94,41 @@
                     ];
                 }
                 
+            } catch(InvalidArgumentException $e) {
+                http_response_code(400);
+                echo $e -> getMessage();
+                exit;
+            }
+        }
+
+        public function createUser($fname, $lname, $email, $password, $yearlvl, $role) {
+            try {
+                if (empty($fname) || empty($lname) || empty($email) || empty($password) || empty($yearlvl) || empty($role)) {
+                    return [
+                        "status" => false,
+                        "message" => "Fill out all fields."
+                    ];
+                }
+
+                if ($this -> emailExists($email)) {
+                    return [
+                        "status" => false,
+                        "message" => "Email already exists."
+                    ];
+                }
+
+                if ($this -> userModel -> createUser($fname, $lname, $email, $password, $yearlvl, $role)) {
+                    return [
+                        "status" => true,
+                        "message" => "User created successfully."
+                    ];
+                } else {
+                    return [
+                        "status" => false,
+                        "message" => "Failed to create user."
+                    ];
+                }
+
             } catch(InvalidArgumentException $e) {
                 http_response_code(400);
                 echo $e -> getMessage();
