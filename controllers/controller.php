@@ -3,6 +3,8 @@
 
     require_once "../bl/UserManager.php";
     require_once "../bl/RoleManager.php";
+    require_once "../helper/send.php";
+    require_once "../bl/ErrorLoggerManager.php";
 
     ini_set('display_errors', 1);
     error_reporting(E_ALL);
@@ -84,6 +86,7 @@
                 break;
             
             case 'logout':
+                // throw new Exception("Testing error logging");
 
                 $_SESSION = [];
 
@@ -118,7 +121,8 @@
 
                 echo json_encode([
                     "status" => false, 
-                    "message" => "Invalid action"
+                    "message" => "Invalid action",
+                    "action" => $_POST['action']
                 ]);
 
                 break;
@@ -127,6 +131,15 @@
         exit;
 
     } catch (Exception $e) {
+        $errorLogger = new ErrorLoggerManager();
+        $errorLogger -> logError(
+            $e->getMessage(), 
+            'Exception', 
+            $e->getFile(), 
+            $e->getLine(), 
+            $_SESSION['user_id'] ?? null
+        );
+
         http_response_code(400);
         echo $e -> getMessage();
         exit;
@@ -138,10 +151,13 @@
                 return is_string($in) ? trim($in) : $in;
             }, $data);
 
+            $action = $_POST['action'] ?? null;
+            if (!$action) {
+                return;
+            }
+
             switch($input['action']) {
                 case 'signup':
-                case 'update':
-
                     if (empty($input['fname']) || empty($input['lname']) || empty($input['email']) || empty($input['password']) || empty($input['yearlvl'])) {
                         echo json_encode([
                             "status" => false,

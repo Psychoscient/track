@@ -13,6 +13,20 @@ document.addEventListener('DOMContentLoaded', function() {
     submit.addEventListener('click', function(e) {
         e.preventDefault();
 
+        const validate = Utils.validateSignup(fname, lname, email, password);
+        console.log(validate);
+
+        if(!validate.status) {
+            Swal.fire({
+                title: "Error!",
+                text: validate.message,
+                icon: "error",
+                confirmButtonText: "OK"
+            });
+
+            return;
+        }
+
         $.ajax({
             url: '../controllers/controller.php',
             type: 'POST',

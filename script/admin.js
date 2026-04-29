@@ -1,6 +1,13 @@
 document.addEventListener('DOMContentLoaded', function() {
     const create = document.getElementById('create');
     const buttons = document.querySelectorAll('.dashboard-btn');
+    const logoutBtn = document.getElementById('logout');
+
+    logoutBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        Utils.logout();
+    });
     
     create.addEventListener('click', (e) => {
         e.preventDefault();
@@ -68,11 +75,14 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Handle update submit button
-    document.getElementById('updateSubmitBtn').addEventListener('click', function(e) {
-        e.preventDefault();
-        const userID = document.getElementById('editModal').dataset.userID;
-        submitUpdate(userID);
-    });
+    const updateBtn = document.getElementById('updateBtn');
+    if (updateBtn) {
+        updateBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const userID = document.getElementById('editModal').dataset.userID;
+            submitUpdate(userID);
+        });
+    }
 
     function openEditModal(userID) {
         const row = document.querySelector(`button[data-userid="${userID}"]`).closest('tr');
@@ -89,7 +99,6 @@ document.addEventListener('DOMContentLoaded', function() {
         roleSelect.value = cells[5].dataset.roleId || '';
         document.getElementById('edit_password').value = '';
         
-        // Open the modal
         window.openEditModal(userID);
     }
 
@@ -108,6 +117,8 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             success: function(response) {
                 let res = JSON.parse(response);
+
+                console.log(res);
 
                 if (!res.status) {
                     Swal.fire({
@@ -133,7 +144,7 @@ document.addEventListener('DOMContentLoaded', function() {
             error: function(xhr, status, error) {
                 Swal.fire({
                     title: "Error!",
-                    text: "Something went wrong.",
+                    text: xhr.responseText,
                     icon: "error",
                     confirmButtonText: "OK"
                 });

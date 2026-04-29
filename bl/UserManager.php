@@ -3,6 +3,7 @@
 
     require_once "../model/config/Database.php";
     require_once "../model/UserModel.php";
+    require_once "ErrorLoggerManager.php";
 
     class UserManager {
         private $userModel;
@@ -44,10 +45,16 @@
                     ];
                 }
 
-                if ($this -> emailExists($email)) {
+                $existingUser = $this -> emailExists($email);
+
+                // echo "<pre>";
+                // print_r($existingUser);
+                // echo "</pre>";
+
+                if ($existingUser['status']) {
                     return [
                         "status" => false,
-                        "message" => "Email already exists."
+                        "message" => "bitch nigga."
                     ];
                 }
 
@@ -73,6 +80,8 @@
         public function loginUser($email, $password) {
             try {
                 $user = $this -> userModel -> searchUser($email);
+
+                // throw new InvalidArgumentException("Test validation error");
                 
                 if (!($this -> emailExists($email))) {
                     return [
@@ -94,7 +103,16 @@
                     ];
                 }
                 
-            } catch(InvalidArgumentException $e) {
+            } catch(Exception $e) {
+                $errorLogger = new ErrorLoggerManager();
+                $errorLogger -> logError(
+                    $e->getMessage(), 
+                    'Exception', 
+                    $e->getFile(), 
+                    $e->getLine(), 
+                    $_SESSION['userID'] ?? null
+                );
+
                 http_response_code(400);
                 echo $e -> getMessage();
                 exit;
@@ -110,7 +128,9 @@
                     ];
                 }
 
-                if ($this -> emailExists($email)) {
+                $existingUser = $this -> emailExists($email);
+
+                if ($existingUser['status']) {
                     return [
                         "status" => false,
                         "message" => "Email already exists."
@@ -129,7 +149,16 @@
                     ];
                 }
 
-            } catch(InvalidArgumentException $e) {
+            } catch(Exception $e) {
+                $errorLogger = new ErrorLoggerManager();
+                $errorLogger -> logError(
+                    $e->getMessage(), 
+                    'Exception', 
+                    $e->getFile(), 
+                    $e->getLine(), 
+                    $_SESSION['user_id'] ?? null
+                );
+
                 http_response_code(400);
                 echo $e -> getMessage();
                 exit;
@@ -138,17 +167,19 @@
 
         public function updateUser($userID, $fname, $lname, $email, $password, $yearlvl) {
             try {
-                if (empty($fname) || empty($lname) || empty($email) || empty($password) || empty($yearlvl)) {
+                if (empty($fname) || empty($lname) || empty($email) || empty($yearlvl)) {
                     return [
                         "status" => false,
                         "message" => "Fill out all fields."
                     ];
                 }
 
-                if ($this -> emailExists($email)) {
+                $existingUser = $this -> emailExists($email);
+
+                if ($existingUser['status'] && $existingUser['user']['email'] !== $email) {
                     return [
                         "status" => false,
-                        "message" => "Email already exists."
+                        "message" => "This email is already taken by another account."
                     ];
                 }
 
@@ -164,7 +195,16 @@
                     ];
                 }
 
-            } catch(InvalidArgumentException $e) {
+            } catch(Exception $e) {
+                $errorLogger = new ErrorLoggerManager();
+                $errorLogger -> logError(
+                    $e->getMessage(), 
+                    'Exception', 
+                    $e->getFile(), 
+                    $e->getLine(), 
+                    $_SESSION['user_id'] ?? null
+                );
+
                 http_response_code(400);
                 echo $e -> getMessage();
                 exit;
@@ -184,7 +224,16 @@
                         "message" => "Failed to delete user."
                     ];
                 }
-            } catch(PDOException $e) {
+            } catch(Exception $e) {
+                $errorLogger = new ErrorLoggerManager();
+                $errorLogger -> logError(
+                    $e->getMessage(), 
+                    'Exception', 
+                    $e->getFile(), 
+                    $e->getLine(), 
+                    $_SESSION['user_id'] ?? null
+                );
+
                 http_response_code(400);
                 echo $e -> getMessage();
                 exit;
@@ -196,21 +245,31 @@
                 $user = $this -> userModel -> searchUser($email);
 
                 if (!$user) {
-                    return false;
+                    return [
+                        "status" => false,
+                        "message" => "Email does not exist."
+                    ];
                 } 
 
-                return true;
+                return [
+                    "status" => true,
+                    "user" => $user
+                ];
 
-            } catch(InvalidArgumentException $e) {
+            } catch(Exception $e) {
+                $errorLogger = new ErrorLoggerManager();
+                $errorLogger -> logError(
+                    $e->getMessage(), 
+                    'Exception', 
+                    $e->getFile(), 
+                    $e->getLine(), 
+                    $_SESSION['user_id'] ?? null
+                );
+
                 http_response_code(400);
                 echo $e -> getMessage();
                 exit;
             }
         }
-
-        public function logoutUser() {
-            
-        }
-
     }
 ?>

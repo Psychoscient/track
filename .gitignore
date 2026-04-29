@@ -1,7 +1,65 @@
+# Dependencies
 node_modules/
-dist/
+vendor/
+composer.lock
+
+# Environment & Config
 .env
-# If you are using Tailwind v4, ignore the output file if you don't want it in Git
+.env.local
+.env.*.local
+
+# Build & Output
+dist/
 output.css
+build/
+public/output.css
+
+# Package Management
 package.json
 package-lock.json
+npm-debug.log
+yarn-error.log
+
+# IDE & Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.sublime-project
+*.sublime-workspace
+.phpstorm.meta.php
+_ide_helper.php
+
+# OS Files
+.DS_Store
+Thumbs.db
+Desktop.ini
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+
+# Logs & Cache
+*.log
+logs/
+cache/
+tmp/
+temp/
+.cache/
+
+# Sessions
+sessions/
+session/
+
+# Testing
+coverage/
+.phpunit.result.cache
+
+# Backup files
+*.bak
+*.backup
+*.tmp
+
+# Local config
+local.php
+config.local.php

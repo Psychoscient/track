@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
 
         const validate = Utils.validateLogin(fields);
-        console.log(validate);
+        // console.log(validate);
 
         if(!validate.status) {
             Swal.fire({
@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 icon: "error",
                 confirmButtonText: "OK"
             });
+
             return;
         }
 

@@ -138,11 +138,13 @@
                                 SET 
                                     first_name = :firstName, 
                                     last_name = :lastName, 
-                                    email = :email, 
-                                    password = :password,
-                                    year_lvl_id = :yearlvl,
-                                    updated_at = :updated_at 
-                                WHERE user_id = :userID";
+                                    email = :email,"; 
+                if (!empty($password)) {
+                    $updateQuery .= "password = :password, ";
+                }
+                $updateQuery .= "year_lvl_id = :yearlvl,
+                                 updated_at = :updated_at 
+                                 WHERE user_id = :userID";
 
                 $response = $this->conn->prepare($updateQuery);
 
@@ -151,8 +153,12 @@
                 $response -> bindParam(":firstName", $fname);
                 $response -> bindParam(":lastName", $lname);
                 $response -> bindParam(":email", $email);
-                $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-                $response -> bindParam(':password', $hashedPassword);
+
+                if(!empty($password)) {
+                    $hashedPassword = password_hash($password, PASSWORD_ARGON2ID);
+                    $response -> bindParam(':password', $hashedPassword);
+                }
+
                 $response -> bindParam(':yearlvl', $yearlvl);
                 $response -> bindParam(":updated_at", $dateNow);
                 $response -> bindParam(":userID", $userID);

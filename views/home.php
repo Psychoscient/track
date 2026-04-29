@@ -18,28 +18,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
+    <title>Home - School Events Tracker</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="./dist/output.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="../public/output.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="bg-gray-100 text-gray-800">
+<body class="font-body bg-ust-light-bg text-ust-dark">
 
     <!-- Navbar -->
-    <header class="bg-white shadow-sm">
+    <header class="bg-white shadow-ust border-b-4 border-ust-gold">
         <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-            <h1 class="text-2xl font-bold text-indigo-600">School Events Tracker</h1>
-            <nav class="space-x-6 hidden md:block">
-                <a href="#" class="text-gray-600 hover:text-indigo-600">Home</a>
-                <a href="#" class="text-gray-600 hover:text-indigo-600">Events</a>
-                <a href="#" class="text-gray-600 hover:text-indigo-600">About</a>
-                <a href="#" class="text-gray-600 hover:text-indigo-600">Contact</a>
-                <button id="logout" class="text-white-600 rounded-lg bg-blue-500 p-2 hover:text-white-600">Logout</button>
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-ust-gold rounded-lg flex items-center justify-center">
+                    <i class="fas fa-graduation-cap text-ust-dark text-lg"></i>
+                </div>
+                <h1 class="text-2xl font-heading font-bold text-ust-dark">School Events Tracker</h1>
+            </div>
+            <nav class="space-x-6 hidden md:flex items-center">
+                <a href="#" class="text-ust-dark hover:text-ust-gold font-medium transition">Home</a>
+                <a href="#" class="text-ust-dark hover:text-ust-gold font-medium transition">Events</a>
+                <a href="#" class="text-ust-dark hover:text-ust-gold font-medium transition">About</a>
+                <a href="#" class="text-ust-dark hover:text-ust-gold font-medium transition">Contact</a>
+                <button id="logout" class="text-white rounded-lg bg-ust-gold hover:bg-ust-gold-dark px-4 py-2 font-semibold transition">
+                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                </button>
                 <?php
                     if (in_array('manage_users', $_SESSION['permissions'])) {
-                        echo '<button id="dashboardBtn" class="text-white-600 rounded-lg bg-blue-500 p-2 hover:text-white-600">Dashboard</button>';
+                        echo '<button id="dashboardBtn" class="text-white rounded-lg bg-ust-dark hover:bg-ust-gray px-4 py-2 font-semibold transition">
+                            <i class="fas fa-chart-line mr-2"></i>Dashboard
+                        </button>';
                     }
                 ?>
             </nav>
@@ -47,20 +56,20 @@
     </header>
 
     <!-- Hero Section -->
-    <section class="bg-indigo-600 text-white">
-        <div class="max-w-7xl mx-auto px-6 py-20 text-center">
-            <h2 class="text-4xl md:text-5xl font-extrabold mb-4">
-                Welcome to the School Events Tracker
+    <section class="bg-gradient-to-r from-ust-dark to-ust-gray text-white py-20">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <h2 class="text-5xl font-heading font-bold mb-4">
+                Welcome to School Events Tracker
             </h2>
-            <p class="text-lg md:text-xl text-indigo-100 max-w-2xl mx-auto mb-8">
-                Stay updated with upcoming school programs, activities, and important events all in one place.
+            <p class="text-lg text-gray-200 max-w-2xl mx-auto mb-8">
+                Stay informed with upcoming school programs, activities, and important events all in one elegant platform.
             </p>
             <div class="flex justify-center gap-4">
-                <a href="#" class="bg-white text-indigo-600 px-6 py-3 rounded-lg font-semibold shadow hover:bg-gray-100">
-                    View Events
+                <a href="#" class="bg-ust-gold text-ust-dark px-8 py-3 rounded-lg font-semibold shadow-ust hover:bg-ust-gold-dark transition">
+                    <i class="fas fa-calendar-alt mr-2"></i>View Events
                 </a>
-                <a href="#" class="border border-white px-6 py-3 rounded-lg font-semibold hover:bg-white hover:text-indigo-600">
-                    Learn More
+                <a href="#" class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-ust-dark transition">
+                    <i class="fas fa-book mr-2"></i>Learn More
                 </a>
             </div>
         </div>
@@ -68,48 +77,89 @@
 
     <!-- Features Section -->
     <section class="max-w-7xl mx-auto px-6 py-16">
-        <h3 class="text-3xl font-bold text-center mb-12">What You Can Do</h3>
+        <h3 class="text-3xl font-heading font-bold text-center mb-12 text-ust-dark">What You Can Do</h3>
         <div class="grid md:grid-cols-3 gap-8">
-            <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
-                <h4 class="text-xl font-semibold mb-3 text-indigo-600">Track Events</h4>
-                <p class="text-gray-600">
-                    View all upcoming school events in a single organized platform.
+            <div class="bg-white p-8 rounded-lg shadow-ust hover:shadow-ust-md transition border-t-4 border-ust-gold">
+                <div class="w-12 h-12 bg-ust-gold/10 rounded-lg flex items-center justify-center mb-4">
+                    <i class="fas fa-calendar text-ust-gold text-xl"></i>
+                </div>
+                <h4 class="text-xl font-heading font-semibold mb-3 text-ust-dark">Track Events</h4>
+                <p class="text-ust-gray">
+                    View all upcoming school events in a single organized platform. Stay updated with dates, times, and important details.
                 </p>
             </div>
 
-            <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
-                <h4 class="text-xl font-semibold mb-3 text-indigo-600">Stay Informed</h4>
-                <p class="text-gray-600">
-                    Get quick access to schedules, announcements, and important updates.
+            <div class="bg-white p-8 rounded-lg shadow-ust hover:shadow-ust-md transition border-t-4 border-ust-gold">
+                <div class="w-12 h-12 bg-ust-gold/10 rounded-lg flex items-center justify-center mb-4">
+                    <i class="fas fa-bell text-ust-gold text-xl"></i>
+                </div>
+                <h4 class="text-xl font-heading font-semibold mb-3 text-ust-dark">Stay Informed</h4>
+                <p class="text-ust-gray">
+                    Get quick access to schedules, announcements, and important updates about all school activities and programs.
                 </p>
             </div>
 
-            <div class="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
-                <h4 class="text-xl font-semibold mb-3 text-indigo-600">Easy Access</h4>
-                <p class="text-gray-600">
-                    Navigate through the homepage with a simple and student-friendly interface.
+            <div class="bg-white p-8 rounded-lg shadow-ust hover:shadow-ust-md transition border-t-4 border-ust-gold">
+                <div class="w-12 h-12 bg-ust-gold/10 rounded-lg flex items-center justify-center mb-4">
+                    <i class="fas fa-mobile-alt text-ust-gold text-xl"></i>
+                </div>
+                <h4 class="text-xl font-heading font-semibold mb-3 text-ust-dark">Easy Access</h4>
+                <p class="text-ust-gray">
+                    Navigate through the platform with an intuitive, student-friendly interface. Accessible on all your devices.
                 </p>
             </div>
         </div>
     </section>
 
     <!-- Announcement Section -->
-    <section class="bg-white py-16">
+    <section class="bg-white py-16 border-y-4 border-ust-gold">
         <div class="max-w-4xl mx-auto px-6 text-center">
-            <h3 class="text-3xl font-bold mb-4">Latest Announcement</h3>
-            <p class="text-gray-600 mb-6">
-                Welcome to the platform. This homepage is currently for design purposes only and does not have working functionality yet.
+            <div class="inline-block px-4 py-2 bg-ust-gold/10 rounded-full mb-4">
+                <span class="text-sm font-semibold text-ust-gold">Latest News</span>
+            </div>
+            <h3 class="text-3xl font-heading font-bold mb-4 text-ust-dark">Latest Announcement</h3>
+            <p class="text-ust-gray mb-6 leading-relaxed">
+                Welcome to the School Events Tracker platform. This is your central hub for all academic events, ceremonies, and student activities. Keep checking back for regular updates on upcoming events and important dates.
             </p>
-            <a href="#" class="inline-block bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-700">
-                Read More
+            <a href="#" class="inline-block bg-ust-gold text-ust-dark px-8 py-3 rounded-lg font-semibold hover:bg-ust-gold-dark shadow-ust transition">
+                <i class="fas fa-arrow-right mr-2"></i>Read More
             </a>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="bg-gray-900 text-gray-300 py-6">
-        <div class="max-w-7xl mx-auto px-6 text-center">
-            <p>&copy; 2026 School Events Tracker. All rights reserved.</p>
+    <footer class="bg-ust-dark text-white py-8">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid md:grid-cols-3 gap-8 mb-8">
+                <div>
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-8 h-8 bg-ust-gold rounded flex items-center justify-center">
+                            <i class="fas fa-graduation-cap text-ust-dark text-sm"></i>
+                        </div>
+                        <h4 class="font-heading font-bold">School Events Tracker</h4>
+                    </div>
+                    <p class="text-gray-300 text-sm">Empowering student engagement and event management.</p>
+                </div>
+                <div>
+                    <h5 class="font-semibold mb-4 text-ust-gold">Quick Links</h5>
+                    <ul class="space-y-2 text-sm text-gray-300">
+                        <li><a href="#" class="hover:text-ust-gold transition">Home</a></li>
+                        <li><a href="#" class="hover:text-ust-gold transition">Events</a></li>
+                        <li><a href="#" class="hover:text-ust-gold transition">About</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="font-semibold mb-4 text-ust-gold">Contact</h5>
+                    <ul class="space-y-2 text-sm text-gray-300">
+                        <li><i class="fas fa-envelope mr-2"></i>info@school.edu</li>
+                        <li><i class="fas fa-phone mr-2"></i>+1 (555) 123-4567</li>
+                        <li><i class="fas fa-map-marker-alt mr-2"></i>School Address</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 pt-6 text-center text-sm text-gray-300">
+                <p>&copy; <?php echo date("Y"); ?> School Events Tracker. All rights reserved.</p>
+            </div>
         </div>
     </footer>
 
