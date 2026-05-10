@@ -13,7 +13,7 @@
                       VALUES (?, ?, ?, ?, ?, ?)";
 
             $response = $this -> conn -> prepare($query);
-            $response->execute([$message, $type, $file, $line, $userID, $sessionID]);
+            $response -> execute([$message, $type, $file, $line, $userID, $sessionID]);
 
             return $response;
         }

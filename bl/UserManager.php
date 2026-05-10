@@ -29,8 +29,8 @@
             return $response -> fetch(PDO::FETCH_ASSOC);
         }
 
-        public function getUserByEmail($email) {
-            $response = $this -> userModel -> searchUser($email);
+        public function getUser($key, $value) {
+            $response = $this -> userModel -> searchUser($key, $value);
             return $response;
         }
 
@@ -79,7 +79,7 @@
 
         public function loginUser($email, $password) {
             try {
-                $user = $this -> userModel -> searchUser($email);
+                $user = $this -> userModel -> searchUser("email", $email);
 
                 // throw new InvalidArgumentException("Test validation error");
                 
@@ -242,7 +242,7 @@
 
         public function emailExists($email) {
             try {
-                $user = $this -> userModel -> searchUser($email);
+                $user = $this -> userModel -> searchUser("email", $email);
 
                 if (!$user) {
                     return [
@@ -250,6 +250,193 @@
                         "message" => "Email does not exist."
                     ];
                 } 
+
+                return [
+                    "status" => true,
+                    "user" => $user
+                ];
+
+            } catch(Exception $e) {
+                $errorLogger = new ErrorLoggerManager();
+                $errorLogger -> logError(
+                    $e->getMessage(), 
+                    'Exception', 
+                    $e->getFile(), 
+                    $e->getLine(), 
+                    $_SESSION['user_id'] ?? null
+                );
+
+                http_response_code(400);
+                echo $e -> getMessage();
+                exit;
+            }
+        }
+
+        public function generateResetToken() {
+            try {
+                return bin2hex(random_bytes(32));
+
+            } catch(Exception $e) {
+                $errorLogger = new ErrorLoggerManager();
+                $errorLogger -> logError(
+                    $e->getMessage(), 
+                    'Exception', 
+                    $e->getFile(), 
+                    $e->getLine(), 
+                    $_SESSION['user_id'] ?? null
+                );
+
+                http_response_code(400);
+                echo $e -> getMessage();
+                exit;
+            }
+        }
+
+        public function changePassword($newPassword, $token) {
+            try {
+                
+                if ($this -> userModel -> updatePasswordByToken($newPassword, $token)) {
+                    return [
+                        "status" => true,
+                        "message" => "Password updated succesfully."
+                    ];
+                } else {
+                    return [
+                        "status" => false,
+                        "message" => "Failed to update password."
+                    ];
+                }
+
+            } catch(Exception $e) {
+                $errorLogger = new ErrorLoggerManager();
+                $errorLogger -> logError(
+                    $e->getMessage(), 
+                    'Exception', 
+                    $e->getFile(), 
+                    $e->getLine(), 
+                    $_SESSION['user_id'] ?? null
+                );
+
+                http_response_code(400);
+                echo $e -> getMessage();
+                exit;
+            }
+        }
+
+        public function requestPasswordReset($email) {
+            try {
+                $existingUser = $this -> emailExists($email);
+
+                if (!$existingUser['status']) {
+                    return [
+                        "status" => false,
+                        "message" => "Invalid user."
+                    ];
+                }
+
+                if ($existingUser['status'] && $existingUser['user']['email'] !== $email) {
+                    return [
+                        "status" => false,
+                        "message" => "This email is already taken by another account."
+                    ];
+                }
+
+                $newToken = $this -> generateResetToken();
+                $newExpiry = date('Y-m-d H:i:s', strtotime('+1 hour'));
+
+                if ($this -> userModel -> storeResetToken($email, $newToken, $newExpiry)) {
+                    return [
+                        "status" => true,
+                        "user" => $existingUser['user'],
+                        "token" => $newToken,
+                        "message" => "Password reset link sent to email."
+                    ];
+                } else {
+                    return [
+                        "status" => false,
+                        "message" => "Failed to email user."
+                    ];
+                }
+
+            } catch(Exception $e) {
+                $errorLogger = new ErrorLoggerManager();
+                $errorLogger -> logError(
+                    $e->getMessage(), 
+                    'Exception', 
+                    $e->getFile(), 
+                    $e->getLine(), 
+                    $_SESSION['user_id'] ?? null
+                );
+
+                http_response_code(400);
+                echo $e -> getMessage();
+                exit;
+            }
+        }
+
+        public function confirmPasswordReset($token, $newPassword, $confirmPassword) {
+            try {
+                $user = $this -> userModel -> searchUser("reset_token", $token);
+
+                if (!$user) {
+                    return [
+                        "status" => false,
+                        "message" => "No user found for this token."
+                    ];
+                }
+
+                if (strtotime($user['reset_token_expiry']) < time()) {
+                    return [
+                        "status" => false,
+                        "message" => "Token expired. Please request a new password reset link."
+                    ];
+                }
+
+                if ($newPassword !== $confirmPassword) {
+                    return [
+                        "status" => false,
+                        "message" => "Passwords do not match."
+                    ];
+                }
+
+                return [
+                    "status" => true,
+                    "user" => $user
+                ];
+
+            } catch(Exception $e) {
+                $errorLogger = new ErrorLoggerManager();
+                $errorLogger -> logError(
+                    $e->getMessage(), 
+                    'Exception', 
+                    $e->getFile(), 
+                    $e->getLine(), 
+                    $_SESSION['user_id'] ?? null
+                );
+
+                http_response_code(400);
+                echo $e -> getMessage();
+                exit;
+            }
+        }
+
+        public function isValidToken($token) {
+            try {
+                $user = $this -> userModel -> searchUser("reset_token", $token);
+
+                if (!$user) {
+                    return [
+                        "status" => false,
+                        "message" => "No user found for this token."
+                    ];
+                }
+
+                if (strtotime($user['reset_token_expiry']) < time()) {
+                    return [
+                        "status" => false,
+                        "message" => "Token expired. Please request a new password reset link."
+                    ];
+                }
 
                 return [
                     "status" => true,

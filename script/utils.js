@@ -12,6 +12,7 @@ const Utils = {
             console.error("Error: " + er.message);
         }
     },
+    
     redirect: function(roleID) {
         try {
             if (roleID === 1) {
@@ -26,6 +27,7 @@ const Utils = {
             console.error("Error: " + er.message);
         }
     },
+
     logout: function() {
         try {
             $.ajax({
@@ -74,6 +76,7 @@ const Utils = {
             }
         }
     },
+
     validateSignup: function(fname, lname, email, pass) {
         try {
             if ((fname === '' || !fname.value) || (lname === '' || !lname.value) || (email === '' || !email.value) || (pass === '' || !pass.value)) {
@@ -97,7 +100,7 @@ const Utils = {
                 }
             }
 
-            if (!isValidEmail(email.value)) {
+            if (!Utils.isValidEmail(email.value)) {
                 return {
                     status: false,
                     message: "Invalid email format."
@@ -115,12 +118,13 @@ const Utils = {
                 message: "Error: " + er.message
             }
         }
-
-        function isValidEmail(email) {
-            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return re.test(email);
-        }
     },
+
+    isValidEmail: function(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+    },
+
     validateLogin: function(fields) {
         try {
             for(let field of fields) {

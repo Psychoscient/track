@@ -38,7 +38,7 @@
             </div>
             <nav class="space-x-6 hidden md:flex items-center">
                 <a href="#" class="text-ust-dark hover:text-ust-gold font-medium transition">Home</a>
-                <a href="#" class="text-ust-dark hover:text-ust-gold font-medium transition">Events</a>
+                <a href="events.php" class="text-ust-dark hover:text-ust-gold font-medium transition">Events</a>
                 <a href="#" class="text-ust-dark hover:text-ust-gold font-medium transition">About</a>
                 <a href="#" class="text-ust-dark hover:text-ust-gold font-medium transition">Contact</a>
                 <button id="logout" class="text-white rounded-lg bg-ust-gold hover:bg-ust-gold-dark px-4 py-2 font-semibold transition">
@@ -47,8 +47,8 @@
                 <?php
                     if (in_array('manage_users', $_SESSION['permissions'])) {
                         echo '<button id="dashboardBtn" class="text-white rounded-lg bg-ust-dark hover:bg-ust-gray px-4 py-2 font-semibold transition">
-                            <i class="fas fa-chart-line mr-2"></i>Dashboard
-                        </button>';
+                                <i class="fas fa-chart-line mr-2"></i>Dashboard
+                            </button>';
                     }
                 ?>
             </nav>

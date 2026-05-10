@@ -35,6 +35,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <link rel="stylesheet" href="../public/output.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <title>Admin Dashboard - School Events Tracker</title>
@@ -74,7 +75,7 @@
         <h2 class="text-2xl font-heading font-bold text-ust-dark mb-6">Dashboard Overview</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
             <!-- Card 1 - Total Users -->
-            <div class="summary-card bg-white rounded-lg shadow-ust p-6 flex flex-col items-center justify-center cursor-pointer border border-gray-100">
+            <div class="summary-card bg-white rounded-lg shadow-ust p-6 flex flex-col items-center justify-center cursor-pointer border border-gray-100" onclick="openChartModal()" style="cursor: pointer;" title="Click to view chart">
                 <div class="text-4xl font-heading font-bold text-ust-gold mb-2">
                     <?= $totalUsers['total_users']; ?>
                 </div>
@@ -358,6 +359,50 @@
         </div>
     </div>
 
+    <!-- Chart Modal -->
+    <div id="chartModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-ust-md max-w-2xl w-full max-h-[90vh] overflow-y-auto border-t-4 border-ust-gold">
+            <div class="sticky top-0 bg-gradient-to-r from-ust-dark to-ust-gray border-b-4 border-ust-gold px-6 py-4 flex items-center justify-between">
+                <h2 class="text-xl font-heading font-bold text-white flex items-center gap-2">
+                    <i class="fas fa-chart-pie"></i>User Distribution
+                </h2>
+                <button 
+                    onclick="closeChartModal()"
+                    type="button"
+                    class="text-white hover:text-ust-gold transition"
+                >
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Pie Chart -->
+                    <div class="flex items-center justify-center">
+                        <canvas id="roleChart" class="max-w-xs"></canvas>
+                    </div>
+
+                    <!-- Bar Chart -->
+                    <div class="flex items-center justify-center">
+                        <canvas id="yearLevelChart" class="max-w-xs"></canvas>
+                    </div>
+                </div>
+
+                <div class="mt-6 flex justify-end">
+                    <button
+                        type="button"
+                        onclick="closeChartModal()"
+                        class="px-6 py-3 rounded-lg border-2 border-ust-gold text-ust-gold hover:bg-ust-gold/5 text-sm font-semibold transition duration-200"
+                    >
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-6 pb-8">
+
     <!-- Edit User Modal -->
     <div id="editModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-lg shadow-ust-md max-w-2xl w-full max-h-[90vh] overflow-y-auto border-t-4 border-ust-gold">
@@ -501,6 +546,214 @@
                 closeEditModal();
             }
         });
+
+        // Chart Modal Functions
+        function openChartModal() {
+            document.getElementById('chartModal').classList.remove('hidden');
+            setTimeout(initializeCharts, 300);
+        }
+
+        function closeChartModal() {
+            document.getElementById('chartModal').classList.add('hidden');
+            destroyCharts();
+        }
+
+        document.getElementById('chartModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeChartModal();
+            }
+        });
+
+        let roleChartInstance = null;
+        let yearLevelChartInstance = null;
+
+        function initializeCharts() {
+            // Prepare data
+            const roleData = {
+                admins: <?php 
+                    $rolesDetails = array_column($usersDetails, 'role_id');
+                    $adminCount = 0;
+                    foreach($rolesDetails as $roleID) {
+                        if ($roleID == 1) {
+                            $adminCount++;
+                        }
+                    }
+                    echo $adminCount;
+                ?>,
+                regular: <?php 
+                    $rolesDetails = array_column($usersDetails, 'role_id');
+                    $count = 0;
+                    foreach($rolesDetails as $roleID) {
+                        if ($roleID == 2) {
+                            $count++;
+                        }
+                    }
+                    echo $count;
+                ?>,
+                organizers: <?php 
+                    $rolesDetails = array_column($usersDetails, 'role_id');
+                    $count = 0;
+                    foreach($rolesDetails as $roleID) {
+                        if ($roleID == 3) {
+                            $count++;
+                        }
+                    }
+                    echo $count;
+                ?>
+            };
+
+            // Role Chart (Pie Chart)
+            const roleCtx = document.getElementById('roleChart').getContext('2d');
+            roleChartInstance = new Chart(roleCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Administrators', 'Regular Users', 'Organizers'],
+                    datasets: [{
+                        data: [roleData.admins, roleData.regular, roleData.organizers],
+                        backgroundColor: [
+                            '#F4C300',
+                            '#D4AF37',
+                            '#DAA520'
+                        ],
+                        borderColor: '#ffffff',
+                        borderWidth: 3,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: {
+                                    family: "'Outfit', sans-serif",
+                                    size: 13,
+                                    weight: '600'
+                                },
+                                color: '#1a1a1a',
+                                padding: 15
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: '#1a1a1a',
+                            titleFont: {
+                                family: "'Outfit', sans-serif",
+                                size: 14,
+                                weight: '600'
+                            },
+                            bodyFont: {
+                                family: "'Outfit', sans-serif",
+                                size: 13
+                            },
+                            padding: 12,
+                            borderRadius: 8
+                        }
+                    }
+                }
+            });
+
+            // Year Level Chart (Bar Chart)
+            const yearLevelData = {};
+            <?php foreach($yearlvl as $year): ?>
+                yearLevelData['<?= $year['year_lvl_name'] ?>'] = 0;
+            <?php endforeach; ?>
+
+            <?php foreach($usersDetails as $user): ?>
+                if ('<?= $user['year_lvl_name'] ?>' in yearLevelData) {
+                    yearLevelData['<?= $user['year_lvl_name'] ?>']++;
+                }
+            <?php endforeach; ?>
+
+            const yearCtx = document.getElementById('yearLevelChart').getContext('2d');
+            yearLevelChartInstance = new Chart(yearCtx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(yearLevelData),
+                    datasets: [{
+                        label: 'Users per Year Level',
+                        data: Object.values(yearLevelData),
+                        backgroundColor: '#F4C300',
+                        borderColor: '#DAA520',
+                        borderWidth: 2,
+                        borderRadius: 6,
+                        hoverBackgroundColor: '#DAA520'
+                    }]
+                },
+                options: {
+                    indexAxis: 'x',
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                font: {
+                                    family: "'Outfit', sans-serif",
+                                    size: 13,
+                                    weight: '600'
+                                },
+                                color: '#1a1a1a'
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: '#1a1a1a',
+                            titleFont: {
+                                family: "'Outfit', sans-serif",
+                                size: 14,
+                                weight: '600'
+                            },
+                            bodyFont: {
+                                family: "'Outfit', sans-serif",
+                                size: 13
+                            },
+                            padding: 12,
+                            borderRadius: 8
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#e5e7eb',
+                                drawBorder: true
+                            },
+                            ticks: {
+                                font: {
+                                    family: "'Outfit', sans-serif",
+                                    size: 12
+                                },
+                                color: '#6b7280'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                font: {
+                                    family: "'Outfit', sans-serif",
+                                    size: 12,
+                                    weight: '600'
+                                },
+                                color: '#1a1a1a'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function destroyCharts() {
+            if (roleChartInstance) {
+                roleChartInstance.destroy();
+                roleChartInstance = null;
+            }
+            if (yearLevelChartInstance) {
+                yearLevelChartInstance.destroy();
+                yearLevelChartInstance = null;
+            }
+        }
     </script>
 
     <script src="../script/utils.js"></script>

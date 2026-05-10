@@ -1,4 +1,5 @@
 <?php
+    require_once "../bl/ErrorLoggerManager.php";
     class UserModel {
         private $conn;
 
@@ -42,29 +43,53 @@
 
                 return $response;
 
-            } catch(PDOException $e){
+            } catch(Exception $e){
                 http_response_code(400);
-                echo "Database error: " . $e -> getMessage();
-                exit;
+
+                $errorLogger = new ErrorLoggerManager();
+                $errorLogger -> logError(
+                    $e->getMessage(), 
+                    'Exception', 
+                    $e->getFile(), 
+                    $e->getLine(), 
+                    $_SESSION['user_id'] ?? null
+                );
+
+                return [
+                    "status" => false,
+                    "message" => "Database error: " . $e -> getMessage()
+                ];
             }
         }
 
-        public function searchUser($email) {
+        public function searchUser($key, $value) {
             try {
                 $selectQuery = "SELECT * 
                                 FROM tbl_users 
-                                WHERE email = :email";
+                                WHERE " . $key . " = :value";
 
                 $response = $this -> conn -> prepare($selectQuery);
-                $response -> bindParam(':email', $email);
+                $response -> bindParam(':value', $value);
                 $response -> execute();
 
                 return $response -> fetch(PDO::FETCH_ASSOC);
 
-            } catch(PDOException $e) {
+            } catch(Exception $e) {
                 http_response_code(400);
-                echo "Database error: " . $e -> getMessage();
-                exit;
+
+                $errorLogger = new ErrorLoggerManager();
+                $errorLogger -> logError(
+                    $e->getMessage(), 
+                    'Exception', 
+                    $e->getFile(), 
+                    $e->getLine(), 
+                    $_SESSION['user_id'] ?? null
+                );
+
+                return [
+                    "status" => false,
+                    "message" => "Database error: " . $e -> getMessage()
+                ];
             }
         }
 
@@ -79,10 +104,22 @@
 
                 return $response;
 
-            } catch(PDOException $e) {
+            } catch(Exception $e) {
                 http_response_code(400);
-                echo "Database error: " . $e -> getMessage();
-                exit;
+
+                $errorLogger = new ErrorLoggerManager();
+                $errorLogger -> logError(
+                    $e->getMessage(), 
+                    'Exception', 
+                    $e->getFile(), 
+                    $e->getLine(), 
+                    $_SESSION['user_id'] ?? null
+                );
+
+                return [
+                    "status" => false,
+                    "message" => "Database error: " . $e -> getMessage()
+                ];
             }
         }
 
@@ -125,10 +162,22 @@
 
                 return $response -> execute();
                 
-            } catch (PDOException $e) {
+            } catch (Exception $e) {
                 http_response_code(400);
-                echo "Database error: " . $e -> getMessage();
-                exit;
+
+                $errorLogger = new ErrorLoggerManager();
+                $errorLogger -> logError(
+                    $e->getMessage(), 
+                    'Exception', 
+                    $e->getFile(), 
+                    $e->getLine(), 
+                    $_SESSION['user_id'] ?? null
+                );
+
+                return [
+                    "status" => false,
+                    "message" => "Database error: " . $e -> getMessage()
+                ];
             }
         }
 
@@ -144,9 +193,10 @@
                 }
                 $updateQuery .= "year_lvl_id = :yearlvl,
                                  updated_at = :updated_at 
-                                 WHERE user_id = :userID";
+                                 WHERE 
+                                    user_id = :userID";
 
-                $response = $this->conn->prepare($updateQuery);
+                $response = $this -> conn -> prepare($updateQuery);
 
                 $dateNow = date('Y-m-d H:i:s');
 
@@ -165,19 +215,165 @@
 
                 return $response -> execute();
 
-            } catch (PDOException $e) {
+            } catch (Exception $e) {
                 http_response_code(400);
-                echo "Database error: " . $e -> getMessage();
-                exit;
+
+                $errorLogger = new ErrorLoggerManager();
+                $errorLogger -> logError(
+                    $e->getMessage(), 
+                    'Exception', 
+                    $e->getFile(), 
+                    $e->getLine(), 
+                    $_SESSION['user_id'] ?? null
+                );
+
+                return [
+                    "status" => false,
+                    "message" => "Database error: " . $e -> getMessage()
+                ];
             }
         }
 
         public function deleteUser($userID) {
-            $deleteQuery = "DELETE FROM tbl_users WHERE user_id = :userID";
-            $response = $this->conn->prepare($deleteQuery);
-            $response->bindParam(":userID", $userID);
+            try {
+                $deleteQuery = "DELETE FROM tbl_users WHERE user_id = :userID";
+                $response = $this -> conn -> prepare($deleteQuery);
+                $response -> bindParam(":userID", $userID);
 
-            return $response->execute();
+                return $response->execute();
+
+            } catch (Exception $e) {
+                http_response_code(400);
+
+                $errorLogger = new ErrorLoggerManager();
+                $errorLogger -> logError(
+                    $e->getMessage(), 
+                    'Exception', 
+                    $e->getFile(), 
+                    $e->getLine(), 
+                    $_SESSION['user_id'] ?? null
+                );
+
+                return [
+                    "status" => false,
+                    "message" => "Database error: " . $e -> getMessage()
+                ];
+            }
+        }
+
+        public function storeResetToken($email, $token, $expiryTime) {
+            try {
+                $query = "UPDATE tbl_users
+                          SET
+                            reset_token = :token, 
+                            reset_token_expiry = :expiry 
+                          WHERE email = :email";
+                
+                $response = $this -> conn -> prepare($query);
+                $response -> bindParam(":token", $token);
+                $response -> bindParam(":expiry", $expiryTime);
+                $response -> bindParam(":email", $email);
+
+                return $response -> execute();
+
+            } catch (Exception $e) {
+                http_response_code(400);
+
+                $errorLogger = new ErrorLoggerManager();
+                $errorLogger -> logError(
+                    $e->getMessage(), 
+                    'Exception', 
+                    $e->getFile(), 
+                    $e->getLine(), 
+                    $_SESSION['user_id'] ?? null
+                );
+
+                return [
+                    "status" => false,
+                    "message" => "Database error: " . $e -> getMessage()
+                ];
+            }
+        }
+
+        public function getUserByResetToken($token) {
+            try {
+                $query = "SELECT * FROM tbl_users WHERE reset_token = :token AND reset_token_expiry > NOW()";
+                $response = $this -> conn -> prepare($query);
+                $response -> bindParam(":token", $token);
+
+                if (!$response) {
+                    return [
+                        "status" => false,
+                        "message" => "Reset token is invalid or has expired."
+                    ];
+                }
+
+                return $response -> execute();
+                
+            } catch (Exception $e) {
+                http_response_code(400);
+
+                $errorLogger = new ErrorLoggerManager();
+                $errorLogger -> logError(
+                    $e->getMessage(), 
+                    'Exception', 
+                    $e->getFile(), 
+                    $e->getLine(), 
+                    $_SESSION['user_id'] ?? null
+                );
+
+                return [
+                    "status" => false,
+                    "message" => "Database error: " . $e -> getMessage()
+                ];
+            }
+        }
+
+        // UPDATE Functions
+
+        public function updatePasswordByToken($newPassword, $token) {
+            try {
+                $query = "UPDATE tbl_users
+                          SET
+                            password = :newPassword,
+                            reset_token = NULL,
+                            reset_token_expiry = NULL  
+                          WHERE reset_token = :token";
+                $response = $this -> conn -> prepare($query);
+                
+                if (!$response) {
+                    throw new Exception("Failed to prepare statement: " . implode(" ", $this->conn->errorInfo()));
+                }
+                
+                $hashedPassword = password_hash($newPassword, PASSWORD_ARGON2ID);
+                $response -> bindParam(':newPassword', $hashedPassword);
+                $response -> bindParam(":token", $token);
+
+                $result = $response -> execute();
+                
+                return $result;
+
+            } catch (Exception $e) {
+                http_response_code(400);
+
+                $errorLogger = new ErrorLoggerManager();
+                $errorLogger -> logError(
+                    $e->getMessage(), 
+                    'Exception', 
+                    $e->getFile(), 
+                    $e->getLine(), 
+                    $_SESSION['user_id'] ?? null
+                );
+
+                return [
+                    "status" => false,
+                    "message" => "Database error: " . $e -> getMessage()
+                ];
+            }
+        }
+
+        public function updatePassword($password) {
+
         }
 
     }

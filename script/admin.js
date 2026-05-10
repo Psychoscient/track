@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Handle update submit button
-    const updateBtn = document.getElementById('updateBtn');
+    const updateBtn = document.getElementById('updateSubmitBtn');
     if (updateBtn) {
         updateBtn.addEventListener('click', function(e) {
             e.preventDefault();

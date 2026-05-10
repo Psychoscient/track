@@ -1,146 +1,188 @@
-# 📚 School Events Tracker System
+# School Events Tracker
 
-A web-based application designed to efficiently manage and track school events. This system enables administrators to organize events, manage users, and control access, while students and staff can easily stay updated with upcoming activities.
+This repository is currently a PHP/MySQL user access system for the School Events Tracker project. The codebase includes authentication, role-based permissions, admin user management, password reset by email, and a Tailwind-styled frontend.
 
-Built with a focus on **clean UI/UX, secure authentication, and scalable architecture**, this project simplifies event coordination within educational institutions.
+It does not currently include implemented event management. The `views/events.php` page exists, but it is empty, and there is no event CRUD wired into the controller flow.
 
----
+## Current Scope
 
-## ✨ Features
+Implemented today:
 
-- 🔐 User Authentication (Login & Logout System)  
-- 🧑‍💼 Role-Based Access Control (RBAC)  
-- 📅 Event Creation, Update, and Deletion  
-- 📋 Event Listing and Tracking  
-- ⚡ AJAX-powered interactions (no page reloads)  
-- 🎨 Responsive UI using Tailwind CSS  
-- 🛡️ Secure backend with prepared statements (PDO)  
+- User signup
+- User login/logout
+- Session-based access control
+- Role/permission lookup during login
+- Admin-only dashboard
+- Admin user create/update/delete
+- Year level lookup for user records
+- Password reset email flow
+- Error logging to the database
+- Tailwind CSS build pipeline for the PHP views
 
----
+Not implemented yet:
 
-## 🛠️ Tech Stack
+- Event listing UI
+- Event creation/update/delete
+- Public landing page or root `index.php`
+- Automated tests
+- Database migrations or seed scripts
 
-### **Frontend**
-- HTML5  
-- CSS3 / Tailwind CSS  
-- JavaScript (Vanilla JS & jQuery)  
+## Stack
 
-### **Backend**
-- PHP  
-- AJAX  
+- PHP
+- MySQL
+- PDO
+- PHPMailer
+- `vlucas/phpdotenv`
+- jQuery
+- SweetAlert2
+- Chart.js
+- Tailwind CSS
+- PostCSS + Autoprefixer
 
-### **Database**
-- MySQL  
-- PDO (PHP Data Objects)  
+## Project Layout
 
-### **Authentication & Security**
-- Session Management  
-- Role-Based Access Control (RBAC)  
-- Input Validation & Sanitization  
-
-### **Development Tools**
-- Git & GitHub  
-- XAMPP / Localhost Environment  
-
----
-
-## 📁 Project Structure (Example)
-
+```text
+Track/
+|-- bl/                  Business-layer managers
+|-- config/              Mail configuration
+|-- controllers/         AJAX/form controller entrypoint
+|-- database/            Present, but no migrations are currently checked in
+|-- helper/              Email helper
+|-- model/               PDO-backed data access layer
+|   `-- config/Database.php
+|-- public/              Compiled frontend assets
+|-- script/              Browser-side JavaScript
+|-- vendor/              Composer dependencies
+|-- views/               PHP pages
+|   |-- login.php
+|   |-- signup.php
+|   |-- home.php
+|   |-- dashboard.php
+|   |-- forgot-password.php
+|   |-- reset-password.php
+|   `-- unauthorized.php
+|-- .env                 Mail credentials
+|-- composer.json
+|-- package.json
+|-- tailwind.config.js
+`-- README.md
 ```
-/project-root
-│── /assets          # CSS, JS, images
-│── /controllers     # Handles requests (AJAX/API logic)
-│── /models          # Database logic
-│── /views           # UI components / pages
-│── /config          # Database connection
-│── index.php        # Entry point
-```
 
----
+## Key Entry Points
 
-## ⚙️ Installation & Setup
+- Login page: `/Track/views/login.php`
+- Signup page: `/Track/views/signup.php`
+- Auth/controller endpoint: `/Track/controllers/controller.php`
+- Admin dashboard: `/Track/views/dashboard.php`
+- Authenticated home page: `/Track/views/home.php`
 
-### **1. Clone the Repository**
+There is no root router or front controller in the repository right now, so accessing the app starts from the `views/` pages directly.
+
+## Setup
+
+### Requirements
+
+- PHP 8+
+- MySQL or MariaDB
+- Composer
+- Node.js and npm
+- A local web server such as XAMPP
+
+### 1. Install dependencies
+
 ```bash
-git clone https://github.com/your-username/school-events-tracker.git
-cd school-events-tracker
+composer install
+npm install
 ```
 
-### **2. Move Project to Server Directory**
-If using XAMPP, place the folder inside:
-```
-C:\xampp\htdocs\
-```
+### 2. Configure the database
 
-### **3. Start Apache & MySQL**
-- Open XAMPP Control Panel  
-- Start **Apache** and **MySQL**
-
-### **4. Setup the Database**
-1. Open **phpMyAdmin**  
-2. Create a new database:
-```
-school_events_db
-```
-3. Import the provided `.sql` file (if available)
-
----
-
-### **5. Configure Database Connection**
-Edit your database config file (e.g., `/config/database.php`):
+The database connection is hardcoded in [model/config/Database.php](/C:/xampp/htdocs/Track/model/config/Database.php:1):
 
 ```php
-$host = 'localhost';
-$dbname = 'school_events_db';
-$username = 'root';
-$password = '';
+host: localhost
+database: track_db
+username: root
+password: ''
 ```
 
----
+Update that file if your local MySQL credentials differ.
 
-### **6. Run the Application**
-Open your browser and go to:
+The repository does not currently include SQL migrations or a schema dump. Based on the code, the app expects at least these tables:
+
+- `tbl_users`
+- `tbl_roles`
+- `tbl_permissions`
+- `tbl_role_permissions`
+- `tbl_year_lvl`
+- `tbl_error_logs`
+
+`tbl_users` also needs reset-password fields used by the current flow:
+
+- `reset_token`
+- `reset_token_expiry`
+
+### 3. Configure mail
+
+Password reset uses Gmail SMTP through PHPMailer and reads credentials from `.env`.
+
+Expected variables:
+
+```env
+MAIL_USERNAME=your-email@example.com
+MAIL_PASSWORD=your-app-password
+MAIL_FROM=your-email@example.com
 ```
-http://localhost/school-events-tracker
+
+These values are loaded in [config/mail.php](/C:/xampp/htdocs/Track/config/mail.php:1).
+
+### 4. Build Tailwind CSS
+
+The frontend build watches `views/css/input.css` and writes the compiled stylesheet to `public/output.css`.
+
+```bash
+npm run build
 ```
 
----
+Note: the current `build` script runs Tailwind in `--watch` mode, so it stays running until you stop it.
 
-## 🔑 Default Access (Optional)
+### 5. Run the app
 
-| Role  | Email             | Password |
-|-------|------------------|----------|
-| Admin | admin@email.com  | password |
-| User  | user@email.com   | password |
+If the project folder is inside `C:\xampp\htdocs\Track`, start Apache and MySQL, then open:
 
----
+```text
+http://localhost/Track/views/login.php
+```
 
-## 🔐 Security Notes
+## Permission Model
 
-- Uses **PDO prepared statements** to prevent SQL Injection  
-- Implements **session-based authentication**  
-- RBAC ensures users only access authorized features  
+Permissions are loaded at login and stored in `$_SESSION['permissions']`.
 
----
+Current page guards:
 
-## 🚀 Future Improvements
+- `views/dashboard.php` requires the `manage_users` permission
+- `views/home.php` requires an authenticated session with permissions present
+- `views/unauthorized.php` is the fallback page for blocked access
 
-- 📱 Mobile-first enhancements  
-- 📊 Dashboard analytics  
-- 🔔 Notifications system  
-- 🌐 API integration  
+The frontend redirect logic currently sends:
 
----
+- role `1` -> admin dashboard
+- role `2` -> home page
+- role `3` -> home page
 
-## 🤝 Contributing
+See [script/utils.js](/C:/xampp/htdocs/Track/script/utils.js:1).
 
-1. Fork the repository  
-2. Create a new branch  
-3. Commit your changes  
-4. Push and open a Pull Request  
+## Frontend Notes
 
----
+- Styling is compiled with Tailwind from [views/css/input.css](/C:/xampp/htdocs/Track/views/css/input.css:1) into [public/output.css](/C:/xampp/htdocs/Track/public/output.css:1).
+- The UI also depends on CDN-hosted jQuery, SweetAlert2, Chart.js, Font Awesome, and Google Fonts.
+- `views/events.php` is currently blank and should be treated as unfinished.
 
-## 📄 License
+## Known Gaps
 
-This project is open-source and available under the **MIT License**.
+- README claims from older revisions about event CRUD are no longer accurate for the checked-in code.
+- The database schema is not versioned in the repo.
+- The database connection is not environment-driven.
+- No test suite or lint script is configured.
+- Some user-facing strings and validation behavior still need cleanup.

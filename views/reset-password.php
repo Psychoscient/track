@@ -1,7 +1,23 @@
 <?php
     session_start();
-    
+
     require_once "../bl/UserManager.php";
+
+    $users = new UserManager();
+    $usersDetails = $users -> getUsersWithRelations();
+
+    if (!isset($_GET['token'])) {
+        header("Location: unauthorized.php");
+        exit;
+    }
+
+    if ($users -> isValidToken($_GET['token'])['status'] === false) {
+        // echo "<script>alert('" . $users -> isValidToken($_GET['token'])['message'] . "');</script>";
+        header("Location: unauthorized.php");
+        exit;
+    }
+
+
 ?>
 
 <!DOCTYPE html>
@@ -9,12 +25,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <link rel="stylesheet" href="../public/output.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <title>Login - School Events Tracker</title>
+    <title>Reset Password - School Events Tracker</title>
 </head>
 
 <body class="min-h-screen flex flex-col font-body bg-gradient-to-br from-ust-light-bg via-ust-cream to-white">
@@ -37,74 +53,57 @@
             <div class="bg-white shadow-ust-md rounded-lg p-8 border border-gray-100">
 
                 <div class="text-center mb-8">
-                    <h2 class="text-2xl font-heading font-semibold text-ust-dark">Welcome Back</h2>
-                    <p class="text-sm text-ust-gray mt-2">Login to your account to continue</p>
+                    <h2 class="text-2xl font-heading font-semibold text-ust-dark">Create New Password</h2>
+                    <p class="text-sm text-ust-gray mt-2">Secure your account with a strong password</p>
                 </div>
 
-                <div id="loginForm" class="space-y-6">
+                <form id="resetForm" class="space-y-6">
+                    <input type="hidden" name="action" value="reset-password">
+                    <input type="hidden" name="token" value="<?php echo htmlspecialchars($_GET['token'] ?? '', ENT_QUOTES); ?>">
 
                     <div>
-                        <label for="email" class="block text-sm font-semibold text-ust-dark mb-2">
-                            Email Address
+                        <label for="newPassword" class="block text-sm font-semibold text-ust-dark mb-2">
+                            New Password
                         </label>
                         <input 
-                            type="email" 
-                            id="email" 
-                            name="email" 
+                            type="password" 
+                            id="newPassword" 
+                            name="newPassword" 
                             required
-                            placeholder="Enter your email"
-                            class="input-field w-full rounded-lg border-2 border-gray-200 px-4 py-3 text-sm font-body text-ust-dark placeholder-gray-400 focus:border-ust-gold focus:ring-2 focus:ring-ust-gold/20 transition bg-ust-cream"
+                            placeholder="Create a strong password"
+                            class="w-full rounded-lg border-2 border-gray-200 px-4 py-3 text-sm font-body text-ust-dark placeholder-gray-400 focus:border-ust-gold focus:ring-2 focus:ring-ust-gold/20 transition bg-ust-cream"
                         >
                     </div>
 
                     <div>
-                        <div class="flex items-center justify-between mb-2">
-                            <label for="password" class="block text-sm font-semibold text-ust-dark">
-                                Password
-                            </label>
-                            <a href="forgot-password.php" class="text-xs text-ust-gold hover:text-ust-gold-dark font-medium transition">
-                                Forgot password?
-                            </a>
-                        </div>
-
+                        <label for="confirmPassword" class="block text-sm font-semibold text-ust-dark mb-2">
+                            Confirm Password
+                        </label>
                         <input 
                             type="password" 
-                            id="password" 
-                            name="password" 
+                            id="confirmPassword" 
+                            name="confirmPassword" 
                             required
-                            placeholder="Enter your password"
-                            class="input-field w-full rounded-lg border-2 border-gray-200 px-4 py-3 text-sm font-body text-ust-dark placeholder-gray-400 focus:border-ust-gold focus:ring-2 focus:ring-ust-gold/20 transition bg-ust-cream"
+                            placeholder="Confirm your password"
+                            class="w-full rounded-lg border-2 border-gray-200 px-4 py-3 text-sm font-body text-ust-dark placeholder-gray-400 focus:border-ust-gold focus:ring-2 focus:ring-ust-gold/20 transition bg-ust-cream"
                         >
                     </div>
 
                     <button 
-                        id="submit"
                         type="submit" 
                         class="w-full bg-ust-gold hover:bg-ust-gold-dark text-ust-dark font-semibold py-3 rounded-lg shadow-ust transition duration-200 flex items-center justify-center gap-2"
                     >
-                        <i class="fas fa-sign-in-alt"></i>
-                        Log In
+                        <i class="fas fa-lock"></i>
+                        Reset Password
                     </button>
 
-                    <div class="relative my-6">
-                        <div class="absolute inset-0 flex items-center">
-                            <div class="w-full border-t border-gray-300"></div>
-                        </div>
-                        <div class="relative flex justify-center text-xs uppercase">
-                            <span class="px-2 bg-white text-ust-gray">or</span>
-                        </div>
-                    </div>
-
                     <div class="text-center pt-2">
-                        <p class="text-sm text-ust-gray mb-3">
-                            Don't have an account?
-                        </p>
-                        <a href="signup.php" class="inline-block px-6 py-2 border-2 border-ust-gold text-ust-gold hover:bg-ust-gold/5 font-semibold rounded-lg transition">
-                            Create Account
+                        <a href="forgot-password.php" class="text-sm text-ust-gold hover:text-ust-gold-dark font-medium transition">
+                            <i class="fas fa-redo mr-1"></i>
+                            Request New Link
                         </a>
                     </div>
-
-                </div>
+                </form>
             </div>
         </div>
     </div>
@@ -120,6 +119,6 @@
     </footer>
 
     <script src="../script/utils.js"></script>
-    <script src="../script/login.js"></script>
+    <script src="../script/reset-password.js"></script>
 </body>
 </html>

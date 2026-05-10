@@ -1,7 +1,5 @@
 <?php
     session_start();
-    
-    require_once "../bl/UserManager.php";
 ?>
 
 <!DOCTYPE html>
@@ -14,7 +12,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <title>Login - School Events Tracker</title>
+    <title>Forgot Password - School Events Tracker</title>
 </head>
 
 <body class="min-h-screen flex flex-col font-body bg-gradient-to-br from-ust-light-bg via-ust-cream to-white">
@@ -37,11 +35,12 @@
             <div class="bg-white shadow-ust-md rounded-lg p-8 border border-gray-100">
 
                 <div class="text-center mb-8">
-                    <h2 class="text-2xl font-heading font-semibold text-ust-dark">Welcome Back</h2>
-                    <p class="text-sm text-ust-gray mt-2">Login to your account to continue</p>
+                    <h2 class="text-2xl font-heading font-semibold text-ust-dark">Reset Password</h2>
+                    <p class="text-sm text-ust-gray mt-2">Enter your email to receive a reset link</p>
                 </div>
 
-                <div id="loginForm" class="space-y-6">
+                <form method="POST" action="../controllers/controller.php" class="space-y-6">
+                    <input type="hidden" name="action" value="forgot-password">
 
                     <div>
                         <label for="email" class="block text-sm font-semibold text-ust-dark mb-2">
@@ -53,37 +52,17 @@
                             name="email" 
                             required
                             placeholder="Enter your email"
-                            class="input-field w-full rounded-lg border-2 border-gray-200 px-4 py-3 text-sm font-body text-ust-dark placeholder-gray-400 focus:border-ust-gold focus:ring-2 focus:ring-ust-gold/20 transition bg-ust-cream"
+                            class="w-full rounded-lg border-2 border-gray-200 px-4 py-3 text-sm font-body text-ust-dark placeholder-gray-400 focus:border-ust-gold focus:ring-2 focus:ring-ust-gold/20 transition bg-ust-cream"
                         >
                     </div>
 
-                    <div>
-                        <div class="flex items-center justify-between mb-2">
-                            <label for="password" class="block text-sm font-semibold text-ust-dark">
-                                Password
-                            </label>
-                            <a href="forgot-password.php" class="text-xs text-ust-gold hover:text-ust-gold-dark font-medium transition">
-                                Forgot password?
-                            </a>
-                        </div>
-
-                        <input 
-                            type="password" 
-                            id="password" 
-                            name="password" 
-                            required
-                            placeholder="Enter your password"
-                            class="input-field w-full rounded-lg border-2 border-gray-200 px-4 py-3 text-sm font-body text-ust-dark placeholder-gray-400 focus:border-ust-gold focus:ring-2 focus:ring-ust-gold/20 transition bg-ust-cream"
-                        >
-                    </div>
-
-                    <button 
-                        id="submit"
+                    <button
+                        id="submit" 
                         type="submit" 
                         class="w-full bg-ust-gold hover:bg-ust-gold-dark text-ust-dark font-semibold py-3 rounded-lg shadow-ust transition duration-200 flex items-center justify-center gap-2"
                     >
-                        <i class="fas fa-sign-in-alt"></i>
-                        Log In
+                        <i class="fas fa-paper-plane"></i>
+                        Send Reset Link
                     </button>
 
                     <div class="relative my-6">
@@ -97,14 +76,13 @@
 
                     <div class="text-center pt-2">
                         <p class="text-sm text-ust-gray mb-3">
-                            Don't have an account?
+                            Remember your password?
                         </p>
-                        <a href="signup.php" class="inline-block px-6 py-2 border-2 border-ust-gold text-ust-gold hover:bg-ust-gold/5 font-semibold rounded-lg transition">
-                            Create Account
+                        <a href="login.php" class="inline-block px-6 py-2 border-2 border-ust-gold text-ust-gold hover:bg-ust-gold/5 font-semibold rounded-lg transition">
+                            Back to Login
                         </a>
                     </div>
-
-                </div>
+                </form>
             </div>
         </div>
     </div>
@@ -120,6 +98,6 @@
     </footer>
 
     <script src="../script/utils.js"></script>
-    <script src="../script/login.js"></script>
+    <script src="../script/forgot-password.js"></script>
 </body>
 </html>

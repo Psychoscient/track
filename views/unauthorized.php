@@ -1,5 +1,10 @@
 <?php
     session_start();
+
+    require_once "../bl/PermissionManager.php";
+
+    $permissionManager = new PermissionManager();
+    $permissions = $permissionManager -> getPermissions();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -41,11 +46,15 @@
                 <i class="fas fa-sign-in-alt mr-2"></i>
                 Return to Login
             </a>
-            <a href="home.php"
-               class="block w-full border-2 border-ust-gold text-ust-gold hover:bg-ust-gold/5 py-3 rounded-lg font-semibold transition">
-                <i class="fas fa-home mr-2"></i>
-                Go to Home
-            </a>
+            <?php
+                if (isset($_SESSION['permissions'])) {
+                    echo '<a href="home.php"
+                            class="block w-full border-2 border-ust-gold text-ust-gold hover:bg-ust-gold/5 py-3 rounded-lg font-semibold transition">
+                            <i class="fas fa-home mr-2"></i>
+                            Go to Home
+                          </a>';
+                }
+            ?>
         </div>
 
         <p class="text-xs text-ust-gray mt-6">
