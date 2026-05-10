@@ -3,6 +3,7 @@
 
     require_once "../bl/UserManager.php";
     require_once "../bl/RoleManager.php";
+    require_once "../bl/EventManager.php";
     require_once "../helper/send.php";
     require_once "../bl/ErrorLoggerManager.php";
 
@@ -15,6 +16,7 @@
 
         $auth = new UserManager();
         $perm = new RoleManager();
+        $eventManager = new EventManager();
 
         $data = errorHandle($_POST);
 
@@ -82,6 +84,53 @@
 
             case 'delete':
                 $result = $auth -> deleteUser($data['userID']);
+                echo json_encode($result);
+                break;
+
+            case 'event-create':
+                $result = $eventManager -> createEvent(
+                    $data['title'] ?? '',
+                    $data['description'] ?? '',
+                    $data['categoryID'] ?? '',
+                    $data['location'] ?? '',
+                    $data['capacity'] ?? '',
+                    $data['startDateTime'] ?? '',
+                    $data['endDateTime'] ?? '',
+                    $data['statusID'] ?? '',
+                    $_SESSION['user_id'] ?? 0,
+                    $_SESSION['permissions'] ?? []
+                );
+
+                echo json_encode($result);
+                break;
+
+            case 'event-update':
+                $result = $eventManager -> updateEvent(
+                    $data['eventID'] ?? 0,
+                    $data['title'] ?? '',
+                    $data['description'] ?? '',
+                    $data['categoryID'] ?? '',
+                    $data['location'] ?? '',
+                    $data['capacity'] ?? '',
+                    $data['startDateTime'] ?? '',
+                    $data['endDateTime'] ?? '',
+                    $data['statusID'] ?? '',
+                    $_SESSION['user_id'] ?? 0,
+                    $_SESSION['role_id'] ?? 0,
+                    $_SESSION['permissions'] ?? []
+                );
+
+                echo json_encode($result);
+                break;
+
+            case 'event-delete':
+                $result = $eventManager -> deleteEvent(
+                    $data['eventID'] ?? 0,
+                    $_SESSION['user_id'] ?? 0,
+                    $_SESSION['role_id'] ?? 0,
+                    $_SESSION['permissions'] ?? []
+                );
+
                 echo json_encode($result);
                 break;
             

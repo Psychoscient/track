@@ -44,16 +44,20 @@
 
     <!-- Header -->
     <header class="bg-white shadow-ust border-b-4 border-ust-gold">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 bg-ust-gold rounded-lg flex items-center justify-center">
                     <i class="fas fa-graduation-cap text-ust-dark text-lg"></i>
                 </div>
                 <h1 class="text-2xl font-heading font-bold text-ust-dark">Admin Dashboard</h1>
             </div>
-            <button id="logout" class="text-white rounded-lg bg-ust-gold hover:bg-ust-gold-dark px-4 py-2 font-semibold transition">
-                <i class="fas fa-sign-out-alt mr-2"></i>Logout
-            </button>
+            <div class="flex items-center gap-3">
+                <a href="home.php" class="text-ust-dark hover:text-ust-gold font-medium transition">Home</a>
+                <a href="events.php" class="text-ust-dark hover:text-ust-gold font-medium transition">Events</a>
+                <button id="logout" class="text-white rounded-lg bg-ust-gold hover:bg-ust-gold-dark px-4 py-2 font-semibold transition">
+                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                </button>
+            </div>
         </div>
     </header>
 

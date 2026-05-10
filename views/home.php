@@ -37,7 +37,7 @@
                 <h1 class="text-2xl font-heading font-bold text-ust-dark">School Events Tracker</h1>
             </div>
             <nav class="space-x-6 hidden md:flex items-center">
-                <a href="#" class="text-ust-dark hover:text-ust-gold font-medium transition">Home</a>
+                <a href="home.php" class="text-ust-gold font-semibold transition">Home</a>
                 <a href="events.php" class="text-ust-dark hover:text-ust-gold font-medium transition">Events</a>
                 <a href="#" class="text-ust-dark hover:text-ust-gold font-medium transition">About</a>
                 <a href="#" class="text-ust-dark hover:text-ust-gold font-medium transition">Contact</a>
@@ -46,9 +46,9 @@
                 </button>
                 <?php
                     if (in_array('manage_users', $_SESSION['permissions'])) {
-                        echo '<button id="dashboardBtn" class="text-white rounded-lg bg-ust-dark hover:bg-ust-gray px-4 py-2 font-semibold transition">
+                        echo '<a href="dashboard.php" class="text-white rounded-lg bg-ust-dark hover:bg-ust-gray px-4 py-2 font-semibold transition inline-flex items-center">
                                 <i class="fas fa-chart-line mr-2"></i>Dashboard
-                            </button>';
+                            </a>';
                     }
                 ?>
             </nav>
@@ -65,7 +65,7 @@
                 Stay informed with upcoming school programs, activities, and important events all in one elegant platform.
             </p>
             <div class="flex justify-center gap-4">
-                <a href="#" class="bg-ust-gold text-ust-dark px-8 py-3 rounded-lg font-semibold shadow-ust hover:bg-ust-gold-dark transition">
+                <a href="events.php" class="bg-ust-gold text-ust-dark px-8 py-3 rounded-lg font-semibold shadow-ust hover:bg-ust-gold-dark transition">
                     <i class="fas fa-calendar-alt mr-2"></i>View Events
                 </a>
                 <a href="#" class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-ust-dark transition">
@@ -143,8 +143,8 @@
                 <div>
                     <h5 class="font-semibold mb-4 text-ust-gold">Quick Links</h5>
                     <ul class="space-y-2 text-sm text-gray-300">
-                        <li><a href="#" class="hover:text-ust-gold transition">Home</a></li>
-                        <li><a href="#" class="hover:text-ust-gold transition">Events</a></li>
+                        <li><a href="home.php" class="hover:text-ust-gold transition">Home</a></li>
+                        <li><a href="events.php" class="hover:text-ust-gold transition">Events</a></li>
                         <li><a href="#" class="hover:text-ust-gold transition">About</a></li>
                     </ul>
                 </div>
