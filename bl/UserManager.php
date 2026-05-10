@@ -240,6 +240,42 @@
             }  
         }
 
+        public function setUserRole($userID, $roleID) {
+            try {
+                $response = $this -> userModel -> updateUserRole($userID, $roleID);
+
+                if ($response === true) {
+                    return [
+                        "status" => true,
+                        "message" => "User role updated successfully."
+                    ];
+                }
+
+                if (is_array($response) && isset($response['status']) && $response['status'] === false) {
+                    return $response;
+                }
+
+                return [
+                    "status" => false,
+                    "message" => "Failed to update user role."
+                ];
+
+            } catch(Exception $e) {
+                $errorLogger = new ErrorLoggerManager();
+                $errorLogger -> logError(
+                    $e->getMessage(), 
+                    'Exception', 
+                    $e->getFile(), 
+                    $e->getLine(), 
+                    $_SESSION['user_id'] ?? null
+                );
+
+                http_response_code(400);
+                echo $e -> getMessage();
+                exit;
+            }
+        }
+
         public function emailExists($email) {
             try {
                 $user = $this -> userModel -> searchUser("email", $email);

@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const create = document.getElementById('create');
     const buttons = document.querySelectorAll('.dashboard-btn');
+    const applicationButtons = document.querySelectorAll('.application-action-btn');
     const logoutBtn = document.getElementById('logout');
 
     logoutBtn.addEventListener('click', (e) => {
@@ -71,6 +72,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (action === 'edit') openEditModal(userID);
             else if (action === 'delete') deleteUser(userID);
+        });
+    });
+
+    applicationButtons.forEach((btn) => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            const action = btn.dataset.action;
+            const applicationID = btn.dataset.applicationid;
+
+            if (action === 'approve') {
+                reviewApplication(applicationID, 'organizer-approve', 'approve');
+            } else if (action === 'reject') {
+                reviewApplication(applicationID, 'organizer-reject', 'reject');
+            }
         });
     });
 
@@ -194,6 +210,61 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
                 Utils.resetFields();
             }
+        });
+    }
+
+    function reviewApplication(applicationID, controllerAction, verb) {
+        Swal.fire({
+            title: `${verb.charAt(0).toUpperCase() + verb.slice(1)} application?`,
+            text: `This will ${verb} the organizer application.`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: verb.charAt(0).toUpperCase() + verb.slice(1),
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (!result.isConfirmed) {
+                return;
+            }
+
+            $.ajax({
+                url: '../controllers/controller.php',
+                type: 'POST',
+                data: {
+                    applicationID: applicationID,
+                    action: controllerAction
+                },
+                success: function(response) {
+                    let res = JSON.parse(response);
+
+                    if (!res.status) {
+                        Swal.fire({
+                            title: "Error!",
+                            text: res.message,
+                            icon: "error",
+                            confirmButtonText: "OK"
+                        });
+                    } else {
+                        Swal.fire({
+                            title: "Success!",
+                            text: res.message,
+                            icon: "success",
+                            confirmButtonText: "OK"
+                        }).then((click) => {
+                            if (click.isConfirmed) {
+                                location.reload(true);
+                            }
+                        });
+                    }
+                },
+                error: function(xhr) {
+                    Swal.fire({
+                        title: "Error!",
+                        text: xhr.responseText || "Something went wrong.",
+                        icon: "error",
+                        confirmButtonText: "OK"
+                    });
+                }
+            });
         });
     }
 });

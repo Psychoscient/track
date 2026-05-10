@@ -3,6 +3,7 @@
     require_once "../bl/UserManager.php";
     require_once "../bl/YearLevelManager.php";
     require_once "../bl/RoleManager.php";
+    require_once "../bl/OrganizerApplicationManager.php";
 
     $users = new UserManager();
     $usersDetails = $users -> getUsersWithRelations();
@@ -14,6 +15,9 @@
 
     $rolemanager = new RoleManager();
     $roles = $rolemanager -> getRoles();
+
+    $organizerApplicationManager = new OrganizerApplicationManager();
+    $pendingApplications = $organizerApplicationManager -> getPendingApplications();
 
     if (!isset($_SESSION['permissions'])) {
         header("Location: unauthorized.php");
@@ -77,7 +81,7 @@
     
     <div class="max-w-7xl mx-auto px-6 py-8 mb-8">
         <h2 class="text-2xl font-heading font-bold text-ust-dark mb-6">Dashboard Overview</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
             <!-- Card 1 - Total Users -->
             <div class="summary-card bg-white rounded-lg shadow-ust p-6 flex flex-col items-center justify-center cursor-pointer border border-gray-100" onclick="openChartModal()" style="cursor: pointer;" title="Click to view chart">
                 <div class="text-4xl font-heading font-bold text-ust-gold mb-2">
@@ -148,6 +152,15 @@
                 </div>
                 <div class="text-sm text-ust-gray font-semibold flex items-center gap-2">
                     <i class="fas fa-clipboard-list"></i>Organizers
+                </div>
+            </div>
+
+            <div class="summary-card bg-white rounded-lg shadow-ust p-6 flex flex-col items-center justify-center cursor-pointer border border-gray-100">
+                <div class="text-4xl font-heading font-bold text-ust-dark mb-2">
+                    <?= count($pendingApplications); ?>
+                </div>
+                <div class="text-sm text-ust-gray font-semibold flex items-center gap-2">
+                    <i class="fas fa-user-clock"></i>Pending Applications
                 </div>
             </div>
         </div>
@@ -355,6 +368,82 @@
                             <td colspan="9" class="p-6 text-center text-ust-gray">
                                 <i class="fas fa-inbox text-3xl mb-2 block opacity-50"></i>
                                 No users found in the system.
+                            </td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="bg-white shadow-ust rounded-lg overflow-hidden border border-gray-100 mt-8">
+            <div class="bg-gradient-to-r from-ust-dark to-ust-gray px-6 py-4 border-b-4 border-ust-gold">
+                <h3 class="text-lg font-heading font-bold text-white flex items-center gap-2">
+                    <i class="fas fa-file-signature"></i>Organizer Applications
+                </h3>
+            </div>
+
+            <table class="min-w-full text-sm text-left">
+                <thead class="bg-ust-light-bg border-b-2 border-ust-gold">
+                    <tr>
+                        <th class="p-4 font-semibold text-ust-dark">Applicant</th>
+                        <th class="p-4 font-semibold text-ust-dark">Email</th>
+                        <th class="p-4 font-semibold text-ust-dark">Year Level</th>
+                        <th class="p-4 font-semibold text-ust-dark">Reason</th>
+                        <th class="p-4 font-semibold text-ust-dark">Submitted</th>
+                        <th class="p-4 font-semibold text-ust-dark">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <?php if (!empty($pendingApplications)) : ?>
+                        <?php foreach($pendingApplications as $application) : ?>
+                            <tr class="border-b hover:bg-ust-cream/50 transition">
+                                <td class="p-4 text-ust-dark font-semibold">
+                                    <?= htmlspecialchars($application['first_name'] . ' ' . $application['last_name']) ?>
+                                </td>
+                                <td class="p-4 text-ust-gray text-xs">
+                                    <?= htmlspecialchars($application['email']) ?>
+                                </td>
+                                <td class="p-4">
+                                    <span class="inline-block px-3 py-1 bg-ust-gold/10 text-ust-dark text-xs font-semibold rounded-full">
+                                        <?= htmlspecialchars($application['year_lvl_name']) ?>
+                                    </span>
+                                </td>
+                                <td class="p-4 text-ust-gray max-w-md">
+                                    <div class="leading-6 whitespace-pre-line">
+                                        <?= nl2br(htmlspecialchars($application['reason'])) ?>
+                                    </div>
+                                </td>
+                                <td class="p-4 text-ust-gray text-xs">
+                                    <?= date('M d, Y g:i A', strtotime($application['created_at'])) ?>
+                                </td>
+                                <td class="p-4">
+                                    <div class="flex items-center gap-2 flex-wrap">
+                                        <button
+                                            type="button"
+                                            class="application-action-btn flex items-center gap-1 px-3 py-1.5 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition"
+                                            data-action="approve"
+                                            data-applicationid="<?= $application['organizer_application_id'] ?>"
+                                        >
+                                            <i class="fas fa-check"></i>Approve
+                                        </button>
+                                        <button
+                                            type="button"
+                                            class="application-action-btn flex items-center gap-1 px-3 py-1.5 text-sm font-semibold text-white bg-red-500 hover:bg-red-600 rounded-lg transition"
+                                            data-action="reject"
+                                            data-applicationid="<?= $application['organizer_application_id'] ?>"
+                                        >
+                                            <i class="fas fa-times"></i>Reject
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else : ?>
+                        <tr>
+                            <td colspan="6" class="p-6 text-center text-ust-gray">
+                                <i class="fas fa-inbox text-3xl mb-2 block opacity-50"></i>
+                                No pending organizer applications right now.
                             </td>
                         </tr>
                     <?php endif; ?>

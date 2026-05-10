@@ -4,6 +4,7 @@
     require_once "../bl/UserManager.php";
     require_once "../bl/RoleManager.php";
     require_once "../bl/EventManager.php";
+    require_once "../bl/OrganizerApplicationManager.php";
     require_once "../helper/send.php";
     require_once "../bl/ErrorLoggerManager.php";
 
@@ -17,6 +18,7 @@
         $auth = new UserManager();
         $perm = new RoleManager();
         $eventManager = new EventManager();
+        $organizerApplicationManager = new OrganizerApplicationManager();
 
         $data = errorHandle($_POST);
 
@@ -128,6 +130,36 @@
                     $data['eventID'] ?? 0,
                     $_SESSION['user_id'] ?? 0,
                     $_SESSION['role_id'] ?? 0,
+                    $_SESSION['permissions'] ?? []
+                );
+
+                echo json_encode($result);
+                break;
+
+            case 'organizer-apply':
+                $result = $organizerApplicationManager -> applyForOrganizer(
+                    $_SESSION['user_id'] ?? 0,
+                    $_SESSION['role_id'] ?? 0,
+                    $data['reason'] ?? ''
+                );
+
+                echo json_encode($result);
+                break;
+
+            case 'organizer-approve':
+                $result = $organizerApplicationManager -> approveApplication(
+                    $data['applicationID'] ?? 0,
+                    $_SESSION['user_id'] ?? 0,
+                    $_SESSION['permissions'] ?? []
+                );
+
+                echo json_encode($result);
+                break;
+
+            case 'organizer-reject':
+                $result = $organizerApplicationManager -> rejectApplication(
+                    $data['applicationID'] ?? 0,
+                    $_SESSION['user_id'] ?? 0,
                     $_SESSION['permissions'] ?? []
                 );
 

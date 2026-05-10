@@ -234,6 +234,42 @@
             }
         }
 
+        public function updateUserRole($userID, $roleID) {
+            try {
+                $updateQuery = "UPDATE tbl_users
+                                SET
+                                    role_id = :role_id,
+                                    updated_at = :updated_at
+                                WHERE user_id = :userID";
+
+                $response = $this -> conn -> prepare($updateQuery);
+                $dateNow = date('Y-m-d H:i:s');
+
+                $response -> bindParam(':role_id', $roleID, PDO::PARAM_INT);
+                $response -> bindParam(':updated_at', $dateNow);
+                $response -> bindParam(':userID', $userID, PDO::PARAM_INT);
+
+                return $response -> execute();
+
+            } catch (Exception $e) {
+                http_response_code(400);
+
+                $errorLogger = new ErrorLoggerManager();
+                $errorLogger -> logError(
+                    $e->getMessage(), 
+                    'Exception', 
+                    $e->getFile(), 
+                    $e->getLine(), 
+                    $_SESSION['user_id'] ?? null
+                );
+
+                return [
+                    "status" => false,
+                    "message" => "Database error: " . $e -> getMessage()
+                ];
+            }
+        }
+
         public function deleteUser($userID) {
             try {
                 $deleteQuery = "DELETE FROM tbl_users WHERE user_id = :userID";

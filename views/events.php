@@ -4,10 +4,22 @@
     require_once "../bl/EventManager.php";
     require_once "../bl/EventCategoryManager.php";
     require_once "../bl/EventStatusManager.php";
+    require_once "../bl/UserManager.php";
+    require_once "../bl/RoleManager.php";
 
     if (!isset($_SESSION['permissions'])) {
         header("Location: unauthorized.php");
         exit;
+    }
+
+    $userManager = new UserManager();
+    $roleManager = new RoleManager();
+
+    $currentUser = $userManager -> getUser("user_id", $_SESSION['user_id']);
+    if ($currentUser && (!isset($currentUser['status']) || $currentUser['status'] !== false)) {
+        $permissions = array_column($roleManager -> getPermissions($currentUser['role_id']), 'permission_name');
+        $_SESSION['role_id'] = $currentUser['role_id'];
+        $_SESSION['permissions'] = $permissions;
     }
 
     $eventManager = new EventManager();
