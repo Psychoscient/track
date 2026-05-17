@@ -42,33 +42,33 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <title>Admin Dashboard - TRACK</title>
+    <title>User Management - TRACK</title>
 </head>
 <body class="min-h-screen flex flex-col font-body bg-ust-light-bg">
 
     <?php
-        $activePage = 'dashboard';
-        $showDashboardLink = true;
+        $activePage = 'management';
+        $showManagementLink = true;
         require __DIR__ . '/partials/navbar.php';
     ?>
 
-    <!-- Summary Cards -->
-    <style>
-        .summary-card {
-            position: relative;
-            border-top: 4px solid transparent;
-            transition: all 0.25s cubic-bezier(.4,0,.2,1);
-        }
-        .summary-card:hover {
-            border-top: 4px solid #F4C300;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(26, 26, 26, 0.12);
-        }
-    </style>
-    
-    <div class="max-w-7xl mx-auto px-6 py-8 mb-8">
-        <h2 class="text-2xl font-heading font-bold text-ust-dark mb-6">Dashboard Overview</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
+    <div class="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-6 px-6 py-8 lg:flex-row lg:items-start">
+        <?php
+            $managementArea = 'users';
+            $managementSections = [
+                ['id' => 'overview', 'label' => 'Overview', 'icon' => 'fa-chart-line'],
+                ['id' => 'create-user', 'label' => 'Create User', 'icon' => 'fa-user-plus'],
+                ['id' => 'users', 'label' => 'Users', 'icon' => 'fa-list'],
+                ['id' => 'applications', 'label' => 'Applications', 'icon' => 'fa-file-signature'],
+            ];
+            require __DIR__ . '/partials/management-sidebar.php';
+        ?>
+
+        <main class="min-w-0 flex-1">
+    <section id="overview" class="scroll-mt-6">
+        <div class="mb-8">
+        <h2 class="text-2xl font-heading font-bold text-ust-dark mb-6">User Management Overview</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-6">
             <!-- Card 1 - Total Users -->
             <div class="summary-card bg-white rounded-lg shadow-ust p-6 flex flex-col items-center justify-center cursor-pointer border border-gray-100" onclick="openChartModal()" style="cursor: pointer;" title="Click to view chart">
                 <div class="text-4xl font-heading font-bold text-ust-gold mb-2">
@@ -151,11 +151,12 @@
                 </div>
             </div>
         </div>
-    </div>
+        </div>
+    </section>
 
-    <div class="max-w-7xl mx-auto px-6 pb-8">
+    <div>
         <!-- Create User Panel -->
-        <div class="bg-white border border-gray-200 shadow-ust rounded-lg mb-8 overflow-hidden">
+        <section id="create-user" class="scroll-mt-6 bg-white border border-gray-200 shadow-ust rounded-lg mb-8 overflow-hidden">
             <div class="bg-gradient-to-r from-ust-dark to-ust-gray px-6 py-4 border-b-4 border-ust-gold">
                 <h3 class="text-lg font-heading font-bold text-white flex items-center gap-2">
                     <i class="fas fa-user-plus"></i>Create New User
@@ -278,10 +279,10 @@
                     </button>
                 </div>
             </div>
-        </div>
+        </section>
 
         <!-- Users Table -->
-        <div class="bg-white shadow-ust rounded-lg overflow-hidden border border-gray-100">
+        <section id="users" class="scroll-mt-6 bg-white shadow-ust rounded-lg overflow-hidden border border-gray-100">
             <div class="bg-gradient-to-r from-ust-dark to-ust-gray px-6 py-4 border-b-4 border-ust-gold">
                 <h3 class="text-lg font-heading font-bold text-white flex items-center gap-2">
                     <i class="fas fa-list"></i>User Management
@@ -360,9 +361,9 @@
                     <?php endif; ?>
                 </tbody>
             </table>
-        </div>
+        </section>
 
-        <div class="bg-white shadow-ust rounded-lg overflow-hidden border border-gray-100 mt-8">
+        <section id="applications" class="scroll-mt-6 bg-white shadow-ust rounded-lg overflow-hidden border border-gray-100 mt-8">
             <div class="bg-gradient-to-r from-ust-dark to-ust-gray px-6 py-4 border-b-4 border-ust-gold">
                 <h3 class="text-lg font-heading font-bold text-white flex items-center gap-2">
                     <i class="fas fa-file-signature"></i>Organizer Applications
@@ -436,7 +437,9 @@
                     <?php endif; ?>
                 </tbody>
             </table>
-        </div>
+        </section>
+    </div>
+        </main>
     </div>
 
     <!-- Chart Modal -->
@@ -840,5 +843,6 @@
 
     <script src="../script/utils.js"></script>
     <script src="../script/admin.js"></script>
+    <script src="../script/management-nav.js"></script>
 </body>
 </html>

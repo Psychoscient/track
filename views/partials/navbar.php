@@ -1,6 +1,6 @@
 <?php
     $activePage = $activePage ?? '';
-    $showDashboardLink = $showDashboardLink ?? false;
+    $showManagementLink = $showManagementLink ?? ($showDashboardLink ?? false);
 
     $navItems = [
         ['key' => 'home', 'label' => 'Home', 'href' => 'home.php'],
@@ -9,8 +9,8 @@
         ['key' => 'contact', 'label' => 'Contact', 'href' => '#'],
     ];
 
-    if ($showDashboardLink) {
-        $navItems[] = ['key' => 'dashboard', 'label' => 'Dashboard', 'href' => 'dashboard.php'];
+    if ($showManagementLink) {
+        $navItems[] = ['key' => 'management', 'label' => 'Management', 'href' => 'dashboard.php'];
     }
 ?>
 

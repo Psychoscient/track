@@ -3,6 +3,18 @@
 @tailwind utilities;
 
 @layer components {
+  .summary-card {
+    position: relative;
+    border-top: 4px solid transparent;
+    transition: all 0.25s cubic-bezier(.4, 0, .2, 1);
+  }
+
+  .summary-card:hover {
+    border-top-color: #f4c300;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(26, 26, 26, 0.12);
+  }
+
   .auth-bg {
     position: fixed;
     inset: 0;

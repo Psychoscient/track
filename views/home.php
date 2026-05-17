@@ -46,7 +46,7 @@
 
     <?php
         $activePage = 'home';
-        $showDashboardLink = in_array('manage_users', $_SESSION['permissions']);
+        $showManagementLink = in_array('manage_users', $_SESSION['permissions']);
         require __DIR__ . '/partials/navbar.php';
     ?>
 

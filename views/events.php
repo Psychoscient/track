@@ -82,7 +82,7 @@
 
     <?php
         $activePage = 'events';
-        $showDashboardLink = $canManageUsers;
+        $showManagementLink = $canManageUsers;
         require __DIR__ . '/partials/navbar.php';
     ?>
 

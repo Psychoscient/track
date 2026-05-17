@@ -1,5 +1,5 @@
 <?php
-    $showDashboardLink = $showDashboardLink ?? false;
+    $showManagementLink = $showManagementLink ?? ($showDashboardLink ?? false);
 ?>
 
 <footer class="relative z-10 mt-auto border-t-4 border-ust-gold bg-ust-dark text-white">
@@ -19,8 +19,8 @@
                 <nav aria-label="Footer navigation" class="flex flex-col items-start gap-3 text-sm font-semibold text-gray-300">
                     <a href="home.php" class="hover:text-ust-gold transition">Home</a>
                     <a href="events.php" class="hover:text-ust-gold transition">Events</a>
-                    <?php if ($showDashboardLink) : ?>
-                        <a href="dashboard.php" class="hover:text-ust-gold transition">Dashboard</a>
+                    <?php if ($showManagementLink) : ?>
+                        <a href="dashboard.php" class="hover:text-ust-gold transition">Management</a>
                     <?php endif; ?>
                 </nav>
             </div>
