@@ -3,6 +3,7 @@ module.exports = {
   content: [
     "./*.php",
     "./**/*.php",
+    "./script/**/*.js",
     "./views/**/*.{html,js}",
   ],
   theme: {
@@ -31,4 +32,3 @@ module.exports = {
   },
   plugins: [],
 }
-
