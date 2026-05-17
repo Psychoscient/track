@@ -6,8 +6,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const createEndDateTime = document.getElementById('endDateTime');
     const createDescription = document.getElementById('description');
     const createDescriptionCounter = document.getElementById('descriptionCounter');
-    const createCapacity = document.getElementById('capacity');
+    const createVenue = document.getElementById('eventVenueID');
+    const createCapacityDisplay = document.getElementById('capacityDisplay');
     const editEventModal = document.getElementById('editEventModal');
+    const editVenue = document.getElementById('edit_eventVenueID');
+    const editCapacityDisplay = document.getElementById('edit_capacityDisplay');
     const updateEventBtn = document.getElementById('updateEventBtn');
     const closeEditEventModal = document.getElementById('closeEditEventModal');
     const cancelEditEventBtn = document.getElementById('cancelEditEventBtn');
@@ -22,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     initializeCreateDateConstraints();
     initializeCreateDescriptionCounter();
-    initializeCreateCapacityInput();
+    initializeVenueCapacityFields();
 
     if (clearEventFormBtn) {
         clearEventFormBtn.addEventListener('click', function() {
@@ -49,8 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     title: eventData.title,
                     description: eventData.description,
                     categoryID: eventData.categoryID,
-                    location: eventData.location,
-                    capacity: eventData.capacity,
+                    eventVenueID: eventData.eventVenueID,
                     startDateTime: eventData.startDateTime,
                     endDateTime: eventData.endDateTime,
                     statusID: eventData.statusID,
@@ -117,8 +119,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     title: eventData.title,
                     description: eventData.description,
                     categoryID: eventData.categoryID,
-                    location: eventData.location,
-                    capacity: eventData.capacity,
+                    eventVenueID: eventData.eventVenueID,
                     startDateTime: eventData.startDateTime,
                     endDateTime: eventData.endDateTime,
                     statusID: eventData.statusID,
@@ -183,6 +184,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         updateCreateDateConstraints();
         updateCreateDescriptionCounter();
+        updateVenueCapacityDisplay(createVenue, createCapacityDisplay);
     }
 
     function openEditEventModal(eventData) {
@@ -194,8 +196,8 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('edit_title').value = eventData.title || '';
         document.getElementById('edit_description').value = eventData.description || '';
         document.getElementById('edit_categoryID').value = eventData.categoryid || '';
-        document.getElementById('edit_location').value = eventData.location || '';
-        document.getElementById('edit_capacity').value = eventData.capacity || '';
+        document.getElementById('edit_eventVenueID').value = eventData.eventvenueid || '';
+        updateVenueCapacityDisplay(editVenue, editCapacityDisplay);
         document.getElementById('edit_startDateTime').value = formatDateTimeForInput(eventData.startdatetime || '');
         document.getElementById('edit_endDateTime').value = formatDateTimeForInput(eventData.enddatetime || '');
         document.getElementById('edit_statusID').value = eventData.statusid || '';
@@ -262,8 +264,7 @@ document.addEventListener('DOMContentLoaded', function() {
             title: document.getElementById('title') ? document.getElementById('title').value.trim() : '',
             description: document.getElementById('description') ? document.getElementById('description').value.trim() : '',
             categoryID: document.getElementById('categoryID') ? document.getElementById('categoryID').value : '',
-            location: document.getElementById('location') ? document.getElementById('location').value.trim() : '',
-            capacity: document.getElementById('capacity') ? document.getElementById('capacity').value.trim() : '',
+            eventVenueID: document.getElementById('eventVenueID') ? document.getElementById('eventVenueID').value : '',
             startDateTime: document.getElementById('startDateTime') ? document.getElementById('startDateTime').value : '',
             endDateTime: document.getElementById('endDateTime') ? document.getElementById('endDateTime').value : '',
             statusID: document.getElementById('statusID') ? document.getElementById('statusID').value : ''
@@ -276,8 +277,7 @@ document.addEventListener('DOMContentLoaded', function() {
             title: document.getElementById('edit_title') ? document.getElementById('edit_title').value.trim() : '',
             description: document.getElementById('edit_description') ? document.getElementById('edit_description').value.trim() : '',
             categoryID: document.getElementById('edit_categoryID') ? document.getElementById('edit_categoryID').value : '',
-            location: document.getElementById('edit_location') ? document.getElementById('edit_location').value.trim() : '',
-            capacity: document.getElementById('edit_capacity') ? document.getElementById('edit_capacity').value.trim() : '',
+            eventVenueID: document.getElementById('edit_eventVenueID') ? document.getElementById('edit_eventVenueID').value : '',
             startDateTime: document.getElementById('edit_startDateTime') ? document.getElementById('edit_startDateTime').value : '',
             endDateTime: document.getElementById('edit_endDateTime') ? document.getElementById('edit_endDateTime').value : '',
             statusID: document.getElementById('edit_statusID') ? document.getElementById('edit_statusID').value : ''
@@ -334,28 +334,37 @@ document.addEventListener('DOMContentLoaded', function() {
         createDescriptionCounter.textContent = `${remainingCharacters} character${remainingCharacters === 1 ? '' : 's'} left`;
     }
 
-    function initializeCreateCapacityInput() {
-        if (!createCapacity) {
+    function initializeVenueCapacityFields() {
+        if (createVenue) {
+            updateVenueCapacityDisplay(createVenue, createCapacityDisplay);
+            createVenue.addEventListener('change', function() {
+                updateVenueCapacityDisplay(createVenue, createCapacityDisplay);
+            });
+        }
+
+        if (editVenue) {
+            editVenue.addEventListener('change', function() {
+                updateVenueCapacityDisplay(editVenue, editCapacityDisplay);
+            });
+        }
+    }
+
+    function updateVenueCapacityDisplay(venueSelect, capacityDisplay) {
+        if (!venueSelect || !capacityDisplay) {
             return;
         }
 
-        createCapacity.addEventListener('input', function() {
-            createCapacity.value = createCapacity.value.replace(/\D/g, '');
-        });
+        const selectedOption = venueSelect.options[venueSelect.selectedIndex];
+        capacityDisplay.value = selectedOption && selectedOption.dataset.capacity
+            ? selectedOption.dataset.capacity
+            : '';
     }
 
     function validateEventData(eventData, rejectPastStart) {
-        if (!eventData.title || !eventData.description || !eventData.categoryID || !eventData.location || !eventData.startDateTime || !eventData.endDateTime || !eventData.statusID) {
+        if (!eventData.title || !eventData.description || !eventData.categoryID || !eventData.eventVenueID || !eventData.startDateTime || !eventData.endDateTime || !eventData.statusID) {
             return {
                 status: false,
                 message: 'Fill out all fields.'
-            };
-        }
-
-        if (eventData.capacity && (isNaN(eventData.capacity) || parseInt(eventData.capacity, 10) <= 0)) {
-            return {
-                status: false,
-                message: 'Capacity must be a positive number.'
             };
         }
 
@@ -363,13 +372,6 @@ document.addEventListener('DOMContentLoaded', function() {
             return {
                 status: false,
                 message: 'Description must be 300 characters or fewer.'
-            };
-        }
-
-        if (rejectPastStart && eventData.capacity && !/^\d+$/.test(eventData.capacity)) {
-            return {
-                status: false,
-                message: 'Capacity must be a whole number.'
             };
         }
 

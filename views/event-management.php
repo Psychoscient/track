@@ -4,6 +4,7 @@
     require_once "../bl/EventManager.php";
     require_once "../bl/EventCategoryManager.php";
     require_once "../bl/EventStatusManager.php";
+    require_once "../bl/EventVenueManager.php";
 
     if (
         !isset($_SESSION['permissions']) ||
@@ -19,6 +20,7 @@
     $eventManager = new EventManager();
     $eventCategoryManager = new EventCategoryManager();
     $eventStatusManager = new EventStatusManager();
+    $eventVenueManager = new EventVenueManager();
 
     $events = $eventManager -> getEvents(
         $_SESSION['user_id'],
@@ -27,6 +29,7 @@
     );
     $categories = $eventCategoryManager -> getEventCategories();
     $statuses = $eventStatusManager -> getEventStatuses();
+    $venues = $eventVenueManager -> getEventVenues();
 
     $publishedCount = count(array_filter($events, function($event) {
         return $event['event_status_name'] === 'published';
@@ -158,13 +161,24 @@
                         </div>
 
                         <div>
-                            <label for="location" class="block text-sm font-semibold text-ust-dark mb-2">Location</label>
-                            <input type="text" id="location" class="create-event-field w-full rounded-lg border-2 border-gray-200 px-4 py-3 text-sm text-ust-dark placeholder-gray-400 focus:border-ust-gold focus:ring-2 focus:ring-ust-gold/20 transition bg-ust-cream" placeholder="Venue or room">
+                            <label for="eventVenueID" class="block text-sm font-semibold text-ust-dark mb-2">Venue</label>
+                            <select id="eventVenueID" class="create-event-field w-full rounded-lg border-2 border-gray-200 bg-ust-cream px-4 py-3 text-sm text-ust-dark focus:border-ust-gold focus:ring-2 focus:ring-ust-gold/20 transition">
+                                <option value="">Choose Venue</option>
+                                <?php foreach($venues as $venue) : ?>
+                                    <option
+                                        value="<?= $venue['event_venue_id'] ?>"
+                                        data-capacity="<?= $venue['estimated_capacity'] ?>"
+                                        data-location="<?= htmlspecialchars($venue['event_venue_location'], ENT_QUOTES) ?>"
+                                    >
+                                        <?= htmlspecialchars($venue['event_venue_name']) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
                         </div>
 
                         <div>
-                            <label for="capacity" class="block text-sm font-semibold text-ust-dark mb-2">Capacity (optional)</label>
-                            <input type="text" inputmode="numeric" pattern="[0-9]*" id="capacity" class="create-event-field w-full rounded-lg border-2 border-gray-200 px-4 py-3 text-sm text-ust-dark placeholder-gray-400 focus:border-ust-gold focus:ring-2 focus:ring-ust-gold/20 transition bg-ust-cream" placeholder="0">
+                            <label for="capacityDisplay" class="block text-sm font-semibold text-ust-dark mb-2">Estimated Capacity</label>
+                            <input type="text" id="capacityDisplay" class="w-full rounded-lg border-2 border-gray-200 px-4 py-3 text-sm text-ust-dark bg-gray-100" placeholder="Select a venue" readonly>
                         </div>
 
                         <div>
@@ -261,9 +275,14 @@
                                         </div>
                                         <div class="rounded-xl bg-ust-cream border border-ust-gold/10 p-4">
                                             <p class="text-xs uppercase tracking-[0.2em] text-ust-gray">Venue & Capacity</p>
-                                            <p class="mt-2 text-sm font-semibold text-ust-dark"><?= htmlspecialchars($event['location']) ?></p>
+                                            <p class="mt-2 text-sm font-semibold text-ust-dark">
+                                                <?= htmlspecialchars($event['event_venue_name'] ?: $event['location']) ?>
+                                            </p>
+                                            <?php if (!empty($event['event_venue_location'])) : ?>
+                                                <p class="mt-1 text-xs text-ust-gray"><?= htmlspecialchars($event['event_venue_location']) ?></p>
+                                            <?php endif; ?>
                                             <p class="mt-1 text-xs text-ust-gray">
-                                                Capacity: <?= $event['capacity'] ? (int)$event['capacity'] : 'Open / not set' ?>
+                                                Capacity: <?= $event['estimated_capacity'] ? (int)$event['estimated_capacity'] : ($event['capacity'] ? (int)$event['capacity'] : 'Open / not set') ?>
                                             </p>
                                         </div>
                                     </div>
@@ -281,8 +300,8 @@
                                                 data-title="<?= htmlspecialchars($event['title'], ENT_QUOTES) ?>"
                                                 data-description="<?= htmlspecialchars($event['description'], ENT_QUOTES) ?>"
                                                 data-categoryid="<?= $event['event_category_id'] ?>"
-                                                data-location="<?= htmlspecialchars($event['location'], ENT_QUOTES) ?>"
-                                                data-capacity="<?= htmlspecialchars((string)$event['capacity'], ENT_QUOTES) ?>"
+                                                data-eventvenueid="<?= htmlspecialchars((string)$event['event_venue_id'], ENT_QUOTES) ?>"
+                                                data-venuecapacity="<?= htmlspecialchars((string)($event['estimated_capacity'] ?? ''), ENT_QUOTES) ?>"
                                                 data-startdatetime="<?= htmlspecialchars($event['start_datetime'], ENT_QUOTES) ?>"
                                                 data-enddatetime="<?= htmlspecialchars($event['end_datetime'], ENT_QUOTES) ?>"
                                                 data-statusid="<?= $event['event_status_id'] ?>"
@@ -353,13 +372,24 @@
                     </div>
 
                     <div>
-                        <label for="edit_location" class="block text-sm font-semibold text-ust-dark mb-2">Location</label>
-                        <input type="text" id="edit_location" class="edit-event-field w-full rounded-lg border-2 border-gray-200 px-4 py-3 text-sm text-ust-dark placeholder-gray-400 focus:border-ust-gold focus:ring-2 focus:ring-ust-gold/20 transition bg-ust-cream">
+                        <label for="edit_eventVenueID" class="block text-sm font-semibold text-ust-dark mb-2">Venue</label>
+                        <select id="edit_eventVenueID" class="edit-event-field w-full rounded-lg border-2 border-gray-200 bg-ust-cream px-4 py-3 text-sm text-ust-dark focus:border-ust-gold focus:ring-2 focus:ring-ust-gold/20 transition">
+                            <option value="">Choose Venue</option>
+                            <?php foreach($venues as $venue) : ?>
+                                <option
+                                    value="<?= $venue['event_venue_id'] ?>"
+                                    data-capacity="<?= $venue['estimated_capacity'] ?>"
+                                    data-location="<?= htmlspecialchars($venue['event_venue_location'], ENT_QUOTES) ?>"
+                                >
+                                    <?= htmlspecialchars($venue['event_venue_name']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
 
                     <div>
-                        <label for="edit_capacity" class="block text-sm font-semibold text-ust-dark mb-2">Capacity (optional)</label>
-                        <input type="number" id="edit_capacity" class="edit-event-field w-full rounded-lg border-2 border-gray-200 px-4 py-3 text-sm text-ust-dark placeholder-gray-400 focus:border-ust-gold focus:ring-2 focus:ring-ust-gold/20 transition bg-ust-cream">
+                        <label for="edit_capacityDisplay" class="block text-sm font-semibold text-ust-dark mb-2">Estimated Capacity</label>
+                        <input type="text" id="edit_capacityDisplay" class="w-full rounded-lg border-2 border-gray-200 px-4 py-3 text-sm text-ust-dark bg-gray-100" placeholder="Select a venue" readonly>
                     </div>
 
                     <div>

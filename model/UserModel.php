@@ -181,7 +181,7 @@
             }
         }
 
-        public function updateUser($userID, $fname, $lname, $email, $password, $yearlvl) {
+        public function updateUser($userID, $fname, $lname, $email, $password, $yearlvl, $role) {
             try {
                 $updateQuery = "UPDATE tbl_users 
                                 SET 
@@ -191,7 +191,8 @@
                 if (!empty($password)) {
                     $updateQuery .= "password = :password, ";
                 }
-                $updateQuery .= "year_lvl_id = :yearlvl,
+                $updateQuery .= "role_id = :role,
+                                 year_lvl_id = :yearlvl,
                                  updated_at = :updated_at 
                                  WHERE 
                                     user_id = :userID";
@@ -209,6 +210,7 @@
                     $response -> bindParam(':password', $hashedPassword);
                 }
 
+                $response -> bindParam(':role', $role, PDO::PARAM_INT);
                 $response -> bindParam(':yearlvl', $yearlvl);
                 $response -> bindParam(":updated_at", $dateNow);
                 $response -> bindParam(":userID", $userID);

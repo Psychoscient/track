@@ -16,6 +16,7 @@
                                     tbl_events.description,
                                     tbl_events.event_category_id,
                                     tbl_events.event_status_id,
+                                    tbl_events.event_venue_id,
                                     tbl_events.location,
                                     tbl_events.capacity,
                                     tbl_events.start_datetime,
@@ -25,6 +26,9 @@
                                     tbl_events.updated_at,
                                     tbl_event_categories.event_category_name,
                                     tbl_event_status.event_status_name,
+                                    tbl_event_venues.event_venue_name,
+                                    tbl_event_venues.event_venue_location,
+                                    tbl_event_venues.estimated_capacity,
                                     tbl_users.first_name,
                                     tbl_users.last_name
                                 FROM tbl_events
@@ -32,6 +36,8 @@
                                     ON tbl_events.event_category_id = tbl_event_categories.event_category_id
                                 INNER JOIN tbl_event_status
                                     ON tbl_events.event_status_id = tbl_event_status.event_status_id
+                                LEFT JOIN tbl_event_venues
+                                    ON tbl_events.event_venue_id = tbl_event_venues.event_venue_id
                                 INNER JOIN tbl_users
                                     ON tbl_events.created_by = tbl_users.user_id
                                 WHERE tbl_event_status.event_status_name = 'published'
@@ -69,6 +75,7 @@
                                     tbl_events.description,
                                     tbl_events.event_category_id,
                                     tbl_events.event_status_id,
+                                    tbl_events.event_venue_id,
                                     tbl_events.location,
                                     tbl_events.capacity,
                                     tbl_events.start_datetime,
@@ -78,6 +85,9 @@
                                     tbl_events.updated_at,
                                     tbl_event_categories.event_category_name,
                                     tbl_event_status.event_status_name,
+                                    tbl_event_venues.event_venue_name,
+                                    tbl_event_venues.event_venue_location,
+                                    tbl_event_venues.estimated_capacity,
                                     tbl_users.first_name,
                                     tbl_users.last_name
                                 FROM tbl_events
@@ -85,6 +95,8 @@
                                     ON tbl_events.event_category_id = tbl_event_categories.event_category_id
                                 INNER JOIN tbl_event_status
                                     ON tbl_events.event_status_id = tbl_event_status.event_status_id
+                                LEFT JOIN tbl_event_venues
+                                    ON tbl_events.event_venue_id = tbl_event_venues.event_venue_id
                                 INNER JOIN tbl_users
                                     ON tbl_events.created_by = tbl_users.user_id
                                 ORDER BY tbl_events.start_datetime ASC, tbl_events.created_at DESC";
@@ -121,6 +133,7 @@
                                     tbl_events.description,
                                     tbl_events.event_category_id,
                                     tbl_events.event_status_id,
+                                    tbl_events.event_venue_id,
                                     tbl_events.location,
                                     tbl_events.capacity,
                                     tbl_events.start_datetime,
@@ -130,6 +143,9 @@
                                     tbl_events.updated_at,
                                     tbl_event_categories.event_category_name,
                                     tbl_event_status.event_status_name,
+                                    tbl_event_venues.event_venue_name,
+                                    tbl_event_venues.event_venue_location,
+                                    tbl_event_venues.estimated_capacity,
                                     tbl_users.first_name,
                                     tbl_users.last_name
                                 FROM tbl_events
@@ -137,6 +153,8 @@
                                     ON tbl_events.event_category_id = tbl_event_categories.event_category_id
                                 INNER JOIN tbl_event_status
                                     ON tbl_events.event_status_id = tbl_event_status.event_status_id
+                                LEFT JOIN tbl_event_venues
+                                    ON tbl_events.event_venue_id = tbl_event_venues.event_venue_id
                                 INNER JOIN tbl_users
                                     ON tbl_events.created_by = tbl_users.user_id
                                 WHERE tbl_event_status.event_status_name = 'published'
@@ -176,6 +194,7 @@
                                     tbl_events.description,
                                     tbl_events.event_category_id,
                                     tbl_events.event_status_id,
+                                    tbl_events.event_venue_id,
                                     tbl_events.location,
                                     tbl_events.capacity,
                                     tbl_events.start_datetime,
@@ -185,6 +204,9 @@
                                     tbl_events.updated_at,
                                     tbl_event_categories.event_category_name,
                                     tbl_event_status.event_status_name,
+                                    tbl_event_venues.event_venue_name,
+                                    tbl_event_venues.event_venue_location,
+                                    tbl_event_venues.estimated_capacity,
                                     tbl_users.first_name,
                                     tbl_users.last_name
                                 FROM tbl_events
@@ -192,6 +214,8 @@
                                     ON tbl_events.event_category_id = tbl_event_categories.event_category_id
                                 INNER JOIN tbl_event_status
                                     ON tbl_events.event_status_id = tbl_event_status.event_status_id
+                                LEFT JOIN tbl_event_venues
+                                    ON tbl_events.event_venue_id = tbl_event_venues.event_venue_id
                                 INNER JOIN tbl_users
                                     ON tbl_events.created_by = tbl_users.user_id
                                 WHERE tbl_events.event_id = :event_id";
@@ -221,13 +245,14 @@
             }
         }
 
-        public function createEvent($title, $description, $categoryID, $location, $capacity, $startDateTime, $endDateTime, $statusID, $createdBy) {
+        public function createEvent($title, $description, $categoryID, $eventVenueID, $location, $capacity, $startDateTime, $endDateTime, $statusID, $createdBy) {
             try {
                 $insertQuery = "INSERT INTO tbl_events (
                                     title,
                                     description,
                                     event_category_id,
                                     event_status_id,
+                                    event_venue_id,
                                     location,
                                     capacity,
                                     start_datetime,
@@ -241,6 +266,7 @@
                                     :description,
                                     :event_category_id,
                                     :event_status_id,
+                                    :event_venue_id,
                                     :location,
                                     :capacity,
                                     :start_datetime,
@@ -258,6 +284,7 @@
                 $response -> bindParam(':description', $description);
                 $response -> bindParam(':event_category_id', $categoryID, PDO::PARAM_INT);
                 $response -> bindParam(':event_status_id', $statusID, PDO::PARAM_INT);
+                $response -> bindParam(':event_venue_id', $eventVenueID, PDO::PARAM_INT);
                 $response -> bindParam(':location', $location);
                 $response -> bindParam(':capacity', $eventCapacity, $eventCapacity === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
                 $response -> bindParam(':start_datetime', $startDateTime);
@@ -287,7 +314,7 @@
             }
         }
 
-        public function updateEvent($eventID, $title, $description, $categoryID, $location, $capacity, $startDateTime, $endDateTime, $statusID) {
+        public function updateEvent($eventID, $title, $description, $categoryID, $eventVenueID, $location, $capacity, $startDateTime, $endDateTime, $statusID) {
             try {
                 $updateQuery = "UPDATE tbl_events
                                 SET
@@ -295,6 +322,7 @@
                                     description = :description,
                                     event_category_id = :event_category_id,
                                     event_status_id = :event_status_id,
+                                    event_venue_id = :event_venue_id,
                                     location = :location,
                                     capacity = :capacity,
                                     start_datetime = :start_datetime,
@@ -310,6 +338,7 @@
                 $response -> bindParam(':description', $description);
                 $response -> bindParam(':event_category_id', $categoryID, PDO::PARAM_INT);
                 $response -> bindParam(':event_status_id', $statusID, PDO::PARAM_INT);
+                $response -> bindParam(':event_venue_id', $eventVenueID, PDO::PARAM_INT);
                 $response -> bindParam(':location', $location);
                 $response -> bindParam(':capacity', $eventCapacity, $eventCapacity === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
                 $response -> bindParam(':start_datetime', $startDateTime);

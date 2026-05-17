@@ -167,7 +167,7 @@
 
     <?php $showDashboardLink = false; require __DIR__ . '/partials/footer.php'; ?>
 
-    <script src="../script/utils.js"></script>
-    <script src="../script/signup.js"></script>
+    <script src="../script/utils.js?v=20260517"></script>
+    <script src="../script/signup.js?v=20260517"></script>
 </body>
 </html>

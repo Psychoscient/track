@@ -79,7 +79,8 @@
                                               $data['lname'], 
                                               $data['email'], 
                                               $data['password'], 
-                                              $data['yearlvl']);
+                                              $data['yearlvl'],
+                                              $data['role']);
 
                 echo json_encode($result);
                 break;
@@ -94,8 +95,7 @@
                     $data['title'] ?? '',
                     $data['description'] ?? '',
                     $data['categoryID'] ?? '',
-                    $data['location'] ?? '',
-                    $data['capacity'] ?? '',
+                    $data['eventVenueID'] ?? '',
                     $data['startDateTime'] ?? '',
                     $data['endDateTime'] ?? '',
                     $data['statusID'] ?? '',
@@ -112,8 +112,7 @@
                     $data['title'] ?? '',
                     $data['description'] ?? '',
                     $data['categoryID'] ?? '',
-                    $data['location'] ?? '',
-                    $data['capacity'] ?? '',
+                    $data['eventVenueID'] ?? '',
                     $data['startDateTime'] ?? '',
                     $data['endDateTime'] ?? '',
                     $data['statusID'] ?? '',

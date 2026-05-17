@@ -79,7 +79,16 @@ const Utils = {
 
     validateSignup: function(fname, lname, email, pass, confirmPass) {
         try {
-            if ((fname === '' || !fname.value) || (lname === '' || !lname.value) || (email === '' || !email.value) || (pass === '' || !pass.value) || (confirmPass === '' || !confirmPass.value)) {
+            const confirmPasswordField = confirmPass || document.getElementById('confirmPassword');
+
+            if (!fname || !lname || !email || !pass || !confirmPasswordField) {
+                return {
+                    status: false,
+                    message: "Fill out all fields."
+                };
+            }
+
+            if ((fname === '' || !fname.value) || (lname === '' || !lname.value) || (email === '' || !email.value) || (pass === '' || !pass.value) || (confirmPasswordField === '' || !confirmPasswordField.value)) {
                 return {
                     status: false,
                     message: "Fill out all fields."
@@ -100,7 +109,7 @@ const Utils = {
                 }
             }
 
-            if (pass.value !== confirmPass.value) {
+            if (pass.value !== confirmPasswordField.value) {
                 return {
                     status: false,
                     message: "Passwords do not match."

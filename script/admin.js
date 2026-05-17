@@ -128,6 +128,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 email: document.getElementById('edit_email').value,
                 password: document.getElementById('edit_password').value,
                 yearlvl: document.getElementById('edit_yearlvl').value,
+                role: document.getElementById('edit_role').value,
                 userID: `${userID}`,
                 action: 'update'
             },

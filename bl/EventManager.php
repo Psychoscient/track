@@ -1,6 +1,7 @@
 <?php
     require_once "../model/config/Database.php";
     require_once "../model/EventModel.php";
+    require_once "EventVenueManager.php";
     require_once "ErrorLoggerManager.php";
 
     class EventManager {
@@ -72,7 +73,7 @@
             }
         }
 
-        public function createEvent($title, $description, $categoryID, $location, $capacity, $startDateTime, $endDateTime, $statusID, $userID, $permissions) {
+        public function createEvent($title, $description, $categoryID, $eventVenueID, $startDateTime, $endDateTime, $statusID, $userID, $permissions) {
             try {
                 if (!in_array('manage_events', $permissions)) {
                     return [
@@ -81,7 +82,12 @@
                     ];
                 }
 
-                $validation = $this -> validateEvent($title, $description, $categoryID, $location, $capacity, $startDateTime, $endDateTime, $statusID);
+                $venue = $this -> getValidatedVenue($eventVenueID);
+                if (!$venue['status']) {
+                    return $venue;
+                }
+
+                $validation = $this -> validateEvent($title, $description, $categoryID, $venue['venue']['event_venue_name'], $venue['venue']['estimated_capacity'], $startDateTime, $endDateTime, $statusID);
                 if (!$validation['status']) {
                     return $validation;
                 }
@@ -91,12 +97,23 @@
                     return $futureStartValidation;
                 }
 
-                $createValidation = $this -> validateCreateEvent($description, $capacity);
+                $createValidation = $this -> validateCreateEvent($description);
                 if (!$createValidation['status']) {
                     return $createValidation;
                 }
 
-                $response = $this -> eventModel -> createEvent($title, $description, $categoryID, $location, $capacity, $startDateTime, $endDateTime, $statusID, $userID);
+                $response = $this -> eventModel -> createEvent(
+                    $title,
+                    $description,
+                    $categoryID,
+                    $venue['venue']['event_venue_id'],
+                    $venue['venue']['event_venue_name'],
+                    $venue['venue']['estimated_capacity'],
+                    $startDateTime,
+                    $endDateTime,
+                    $statusID,
+                    $userID
+                );
 
                 if ($response === true) {
                     return [
@@ -130,7 +147,7 @@
             }
         }
 
-        public function updateEvent($eventID, $title, $description, $categoryID, $location, $capacity, $startDateTime, $endDateTime, $statusID, $userID, $roleID, $permissions) {
+        public function updateEvent($eventID, $title, $description, $categoryID, $eventVenueID, $startDateTime, $endDateTime, $statusID, $userID, $roleID, $permissions) {
             try {
                 if (!in_array('manage_events', $permissions)) {
                     return [
@@ -154,12 +171,28 @@
                     ];
                 }
 
-                $validation = $this -> validateEvent($title, $description, $categoryID, $location, $capacity, $startDateTime, $endDateTime, $statusID);
+                $venue = $this -> getValidatedVenue($eventVenueID);
+                if (!$venue['status']) {
+                    return $venue;
+                }
+
+                $validation = $this -> validateEvent($title, $description, $categoryID, $venue['venue']['event_venue_name'], $venue['venue']['estimated_capacity'], $startDateTime, $endDateTime, $statusID);
                 if (!$validation['status']) {
                     return $validation;
                 }
 
-                $response = $this -> eventModel -> updateEvent($eventID, $title, $description, $categoryID, $location, $capacity, $startDateTime, $endDateTime, $statusID);
+                $response = $this -> eventModel -> updateEvent(
+                    $eventID,
+                    $title,
+                    $description,
+                    $categoryID,
+                    $venue['venue']['event_venue_id'],
+                    $venue['venue']['event_venue_name'],
+                    $venue['venue']['estimated_capacity'],
+                    $startDateTime,
+                    $endDateTime,
+                    $statusID
+                );
 
                 if ($response === true) {
                     return [
@@ -330,7 +363,7 @@
             ];
         }
 
-        private function validateCreateEvent($description, $capacity) {
+        private function validateCreateEvent($description) {
             if (strlen($description) > 300) {
                 return [
                     "status" => false,
@@ -338,15 +371,32 @@
                 ];
             }
 
-            if ($capacity !== '' && (!ctype_digit((string)$capacity) || (int)$capacity <= 0)) {
+            return [
+                "status" => true
+            ];
+        }
+
+        private function getValidatedVenue($eventVenueID) {
+            if (!is_numeric($eventVenueID) || (int)$eventVenueID <= 0) {
                 return [
                     "status" => false,
-                    "message" => "Capacity must be a whole number."
+                    "message" => "Choose a valid venue."
+                ];
+            }
+
+            $eventVenueManager = new EventVenueManager();
+            $venue = $eventVenueManager -> getEventVenue((int)$eventVenueID);
+
+            if (!$venue || (isset($venue['status']) && $venue['status'] === false)) {
+                return [
+                    "status" => false,
+                    "message" => "Choose a valid venue."
                 ];
             }
 
             return [
-                "status" => true
+                "status" => true,
+                "venue" => $venue
             ];
         }
     }

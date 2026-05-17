@@ -165,9 +165,9 @@
             }
         }
 
-        public function updateUser($userID, $fname, $lname, $email, $password, $yearlvl) {
+        public function updateUser($userID, $fname, $lname, $email, $password, $yearlvl, $role) {
             try {
-                if (empty($fname) || empty($lname) || empty($email) || empty($yearlvl)) {
+                if (empty($fname) || empty($lname) || empty($email) || empty($yearlvl) || empty($role)) {
                     return [
                         "status" => false,
                         "message" => "Fill out all fields."
@@ -183,7 +183,7 @@
                     ];
                 }
 
-                if ($this -> userModel -> updateUser($userID, $fname, $lname, $email, $password, $yearlvl)) {
+                if ($this -> userModel -> updateUser($userID, $fname, $lname, $email, $password, $yearlvl, $role)) {
                     return [
                         "status" => true,
                         "message" => "User updated successfully."
