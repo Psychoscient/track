@@ -245,6 +245,55 @@
             }
         }
 
+        public function hasVenueConflict($eventVenueID, $startDateTime, $endDateTime, $excludeEventID = null) {
+            try {
+                $selectQuery = "SELECT 1
+                                FROM tbl_events
+                                INNER JOIN tbl_event_status
+                                    ON tbl_events.event_status_id = tbl_event_status.event_status_id
+                                WHERE tbl_events.event_venue_id = :event_venue_id
+                                  AND tbl_event_status.event_status_name IN ('draft', 'published')
+                                  AND tbl_events.start_datetime < :end_datetime
+                                  AND tbl_events.end_datetime > :start_datetime";
+
+                if ($excludeEventID !== null) {
+                    $selectQuery .= " AND tbl_events.event_id <> :exclude_event_id";
+                }
+
+                $selectQuery .= " LIMIT 1";
+
+                $response = $this -> conn -> prepare($selectQuery);
+                $response -> bindParam(':event_venue_id', $eventVenueID, PDO::PARAM_INT);
+                $response -> bindParam(':start_datetime', $startDateTime);
+                $response -> bindParam(':end_datetime', $endDateTime);
+
+                if ($excludeEventID !== null) {
+                    $response -> bindParam(':exclude_event_id', $excludeEventID, PDO::PARAM_INT);
+                }
+
+                $response -> execute();
+
+                return $response -> fetch(PDO::FETCH_ASSOC) !== false;
+
+            } catch(Exception $e) {
+                http_response_code(400);
+
+                $errorLogger = new ErrorLoggerManager();
+                $errorLogger -> logError(
+                    $e->getMessage(),
+                    'Exception',
+                    $e->getFile(),
+                    $e->getLine(),
+                    $_SESSION['user_id'] ?? null
+                );
+
+                return [
+                    "status" => false,
+                    "message" => "Database error: " . $e -> getMessage()
+                ];
+            }
+        }
+
         public function createEvent($title, $description, $categoryID, $eventVenueID, $location, $capacity, $startDateTime, $endDateTime, $statusID, $createdBy) {
             try {
                 $insertQuery = "INSERT INTO tbl_events (

@@ -102,6 +102,15 @@
                     return $createValidation;
                 }
 
+                $venueConflictValidation = $this -> validateVenueAvailability(
+                    $venue['venue']['event_venue_id'],
+                    $startDateTime,
+                    $endDateTime
+                );
+                if (!$venueConflictValidation['status']) {
+                    return $venueConflictValidation;
+                }
+
                 $response = $this -> eventModel -> createEvent(
                     $title,
                     $description,
@@ -179,6 +188,16 @@
                 $validation = $this -> validateEvent($title, $description, $categoryID, $venue['venue']['event_venue_name'], $venue['venue']['estimated_capacity'], $startDateTime, $endDateTime, $statusID);
                 if (!$validation['status']) {
                     return $validation;
+                }
+
+                $venueConflictValidation = $this -> validateVenueAvailability(
+                    $venue['venue']['event_venue_id'],
+                    $startDateTime,
+                    $endDateTime,
+                    $eventID
+                );
+                if (!$venueConflictValidation['status']) {
+                    return $venueConflictValidation;
                 }
 
                 $response = $this -> eventModel -> updateEvent(
@@ -368,6 +387,30 @@
                 return [
                     "status" => false,
                     "message" => "Description must be 300 characters or fewer."
+                ];
+            }
+
+            return [
+                "status" => true
+            ];
+        }
+
+        private function validateVenueAvailability($eventVenueID, $startDateTime, $endDateTime, $excludeEventID = null) {
+            $hasConflict = $this -> eventModel -> hasVenueConflict(
+                $eventVenueID,
+                $startDateTime,
+                $endDateTime,
+                $excludeEventID
+            );
+
+            if (is_array($hasConflict) && isset($hasConflict['status']) && $hasConflict['status'] === false) {
+                return $hasConflict;
+            }
+
+            if ($hasConflict) {
+                return [
+                    "status" => false,
+                    "message" => "Selected venue is already reserved for the chosen time."
                 ];
             }
 
