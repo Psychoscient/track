@@ -71,35 +71,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Events - School Events Tracker</title>
+    <title>Events - TRACK</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <link rel="stylesheet" href="../public/output.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="font-body bg-ust-light-bg text-ust-dark">
+<body class="min-h-screen flex flex-col font-body bg-ust-light-bg text-ust-dark">
 
-    <header class="bg-white shadow-ust border-b-4 border-ust-gold">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-ust-gold rounded-lg flex items-center justify-center">
-                    <i class="fas fa-graduation-cap text-ust-dark text-lg"></i>
-                </div>
-                <h1 class="text-2xl font-heading font-bold text-ust-dark">School Events Tracker</h1>
-            </div>
-            <nav class="hidden md:flex items-center gap-6">
-                <a href="home.php" class="text-ust-dark hover:text-ust-gold font-medium transition">Home</a>
-                <a href="events.php" class="text-ust-gold font-semibold transition">Events</a>
-                <?php if ($canManageUsers) : ?>
-                    <a href="dashboard.php" class="text-ust-dark hover:text-ust-gold font-medium transition">Dashboard</a>
-                <?php endif; ?>
-                <button id="logout" class="text-white rounded-lg bg-ust-gold hover:bg-ust-gold-dark px-4 py-2 font-semibold transition">
-                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
-                </button>
-            </nav>
-        </div>
-    </header>
+    <?php
+        $activePage = 'events';
+        $showDashboardLink = $canManageUsers;
+        require __DIR__ . '/partials/navbar.php';
+    ?>
 
     <section class="relative overflow-hidden bg-gradient-to-br from-ust-dark via-[#2B2B2B] to-ust-gray text-white">
         <div class="absolute inset-0 opacity-20">
@@ -357,6 +342,8 @@
             <?php endif; ?>
         </section>
     </main>
+
+    <?php require __DIR__ . '/partials/footer.php'; ?>
 
     <?php if ($canManageEvents) : ?>
         <div id="editEventModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">

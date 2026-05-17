@@ -12,7 +12,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <title>Forgot Password - School Events Tracker</title>
+    <title>Forgot Password - TRACK</title>
 </head>
 
 <body class="min-h-screen flex flex-col font-body bg-gradient-to-br from-ust-light-bg via-ust-cream to-white">
@@ -20,15 +20,8 @@
     <!-- Main Content -->
     <div class="grow flex items-center justify-center px-4 py-10">
         <div class="w-full max-w-md">
-            <!-- Header with UST Gold Accent -->
-            <div class="text-center mb-8">
-                <div class="inline-block mb-4">
-                    <div class="w-16 h-16 bg-ust-gold rounded-full flex items-center justify-center shadow-ust-md">
-                        <i class="fas fa-graduation-cap text-ust-dark text-2xl"></i>
-                    </div>
-                </div>
-                <h1 class="text-4xl font-heading font-bold text-ust-dark mb-2">School Events</h1>
-                <p class="text-sm text-ust-gray">Tracker</p>
+            <div class="mb-8 flex justify-center">
+                <?php $logoVariant = 'navbar'; require __DIR__ . '/partials/logo.php'; ?>
             </div>
 
             <!-- Card -->
@@ -87,15 +80,7 @@
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="text-center py-6 border-t border-ust-gold/10 bg-white/70 backdrop-blur-sm">
-        <p class="text-sm font-semibold text-ust-dark">
-            © <?php echo date("Y"); ?> School Events Tracker
-        </p>
-        <p class="text-xs text-ust-gray mt-1">
-            Empowering student engagement and event management
-        </p>
-    </footer>
+    <?php $showDashboardLink = false; require __DIR__ . '/partials/footer.php'; ?>
 
     <script src="../script/utils.js"></script>
     <script src="../script/forgot-password.js"></script>

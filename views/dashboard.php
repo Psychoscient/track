@@ -42,28 +42,15 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <title>Admin Dashboard - School Events Tracker</title>
+    <title>Admin Dashboard - TRACK</title>
 </head>
-<body class="font-body bg-ust-light-bg">
+<body class="min-h-screen flex flex-col font-body bg-ust-light-bg">
 
-    <!-- Header -->
-    <header class="bg-white shadow-ust border-b-4 border-ust-gold">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-ust-gold rounded-lg flex items-center justify-center">
-                    <i class="fas fa-graduation-cap text-ust-dark text-lg"></i>
-                </div>
-                <h1 class="text-2xl font-heading font-bold text-ust-dark">Admin Dashboard</h1>
-            </div>
-            <div class="flex items-center gap-3">
-                <a href="home.php" class="text-ust-dark hover:text-ust-gold font-medium transition">Home</a>
-                <a href="events.php" class="text-ust-dark hover:text-ust-gold font-medium transition">Events</a>
-                <button id="logout" class="text-white rounded-lg bg-ust-gold hover:bg-ust-gold-dark px-4 py-2 font-semibold transition">
-                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
-                </button>
-            </div>
-        </div>
-    </header>
+    <?php
+        $activePage = 'dashboard';
+        $showDashboardLink = true;
+        require __DIR__ . '/partials/navbar.php';
+    ?>
 
     <!-- Summary Cards -->
     <style>
@@ -848,6 +835,8 @@
             }
         }
     </script>
+
+    <?php require __DIR__ . '/partials/footer.php'; ?>
 
     <script src="../script/utils.js"></script>
     <script src="../script/admin.js"></script>

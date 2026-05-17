@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="../public/output.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <title>Unauthorized - School Events Tracker</title>
+    <title>Unauthorized - TRACK</title>
 
     <script>
         setTimeout(() => {
@@ -22,9 +22,10 @@
         }, 5000);
     </script>
 </head>
-<body class="font-body bg-gradient-to-br from-ust-light-bg via-ust-cream to-white flex items-center justify-center min-h-screen px-4">
+<body class="min-h-screen flex flex-col font-body bg-gradient-to-br from-ust-light-bg via-ust-cream to-white">
 
-    <div class="bg-white shadow-ust-md rounded-lg p-8 text-center max-w-md w-full border border-gray-100">
+    <main class="grow flex items-center justify-center px-4 py-10">
+        <div class="bg-white shadow-ust-md rounded-lg p-8 text-center max-w-md w-full border border-gray-100">
         
         <div class="inline-block mb-6">
             <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
@@ -62,7 +63,10 @@
             Redirecting to login in 5 seconds...
         </p>
 
-    </div>
+        </div>
+    </main>
+
+    <?php $showDashboardLink = isset($_SESSION['permissions']) && in_array('manage_users', $_SESSION['permissions']); require __DIR__ . '/partials/footer.php'; ?>
 
 </body>
 </html>
