@@ -77,9 +77,9 @@ const Utils = {
         }
     },
 
-    validateSignup: function(fname, lname, email, pass) {
+    validateSignup: function(fname, lname, email, pass, confirmPass) {
         try {
-            if ((fname === '' || !fname.value) || (lname === '' || !lname.value) || (email === '' || !email.value) || (pass === '' || !pass.value)) {
+            if ((fname === '' || !fname.value) || (lname === '' || !lname.value) || (email === '' || !email.value) || (pass === '' || !pass.value) || (confirmPass === '' || !confirmPass.value)) {
                 return {
                     status: false,
                     message: "Fill out all fields."
@@ -97,6 +97,13 @@ const Utils = {
                 return {
                     status: false,
                     message: "Password must be at least 8 characters."
+                }
+            }
+
+            if (pass.value !== confirmPass.value) {
+                return {
+                    status: false,
+                    message: "Passwords do not match."
                 }
             }
 

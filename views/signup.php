@@ -100,6 +100,20 @@
                     </div>
 
                     <div>
+                        <label for="confirmPassword" class="block text-sm font-semibold text-ust-dark mb-2">
+                            Confirm Password
+                        </label>
+                        <input
+                            type="password"
+                            id="confirmPassword"
+                            name="confirmPassword"
+                            required
+                            placeholder="Confirm your password"
+                            class="input-field w-full rounded-lg border-2 border-gray-200 px-4 py-3 text-sm font-body text-ust-dark placeholder-gray-400 focus:border-ust-gold focus:ring-2 focus:ring-ust-gold/20 transition bg-ust-cream"
+                        >
+                    </div>
+
+                    <div>
                         <label for="yearlvl" class="block text-sm font-semibold text-ust-dark mb-2">
                             Year Level
                         </label>

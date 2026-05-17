@@ -361,7 +361,7 @@
 
             switch($input['action']) {
                 case 'signup':
-                    if (empty($input['fname']) || empty($input['lname']) || empty($input['email']) || empty($input['password']) || empty($input['yearlvl'])) {
+                    if (empty($input['fname']) || empty($input['lname']) || empty($input['email']) || empty($input['password']) || empty($input['confirmPassword']) || empty($input['yearlvl'])) {
                         echo json_encode([
                             "status" => false,
                             "message" => "Fill out all fields."
@@ -383,6 +383,14 @@
                             "message" => "Password should have at least 8 characters."
                         ]);
                         exit; 
+                    }
+
+                    if ($input['password'] !== $input['confirmPassword']) {
+                        echo json_encode([
+                            "status" => false,
+                            "message" => "Passwords do not match."
+                        ]);
+                        exit;
                     }
 
                 break;

@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const lname = document.getElementById('lname');
     const email = document.getElementById('email');
     const password = document.getElementById('password');
+    const confirmPassword = document.getElementById('confirmPassword');
     const yearlvl = document.getElementById('yearlvl');
 
     const fields = [fname, lname];
@@ -13,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
     submit.addEventListener('click', function(e) {
         e.preventDefault();
 
-        const validate = Utils.validateSignup(fname, lname, email, password);
+        const validate = Utils.validateSignup(fname, lname, email, password, confirmPassword);
         console.log(validate);
 
         if(!validate.status) {
@@ -35,6 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 lname: lname.value,
                 email: email.value,
                 password: password.value,
+                confirmPassword: confirmPassword.value,
                 yearlvl: yearlvl.value,
                 action: 'signup'
             },
