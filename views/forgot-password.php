@@ -15,10 +15,11 @@
     <title>Forgot Password - TRACK</title>
 </head>
 
-<body class="min-h-screen flex flex-col font-body bg-gradient-to-br from-ust-light-bg via-ust-cream to-white">
+<body class="relative isolate min-h-screen flex flex-col font-body bg-gradient-to-br from-ust-light-bg via-ust-cream to-white">
+    <?php require __DIR__ . '/partials/auth-background.php'; ?>
 
     <!-- Main Content -->
-    <div class="grow flex items-center justify-center px-4 py-10">
+    <div class="relative z-10 grow flex items-center justify-center px-4 py-10">
         <div class="w-full max-w-md">
             <div class="mb-8 flex justify-center">
                 <?php $logoVariant = 'navbar'; require __DIR__ . '/partials/logo.php'; ?>

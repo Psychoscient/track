@@ -1,3 +1,119 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .auth-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+    background:
+      linear-gradient(135deg, #f9f7f3 0%, #fbf8f3 48%, #ffffff 100%);
+  }
+
+  .auth-bg__blob,
+  .auth-bg__wash {
+    position: absolute;
+    border-radius: 9999px;
+    will-change: transform;
+  }
+
+  .auth-bg__blob {
+    filter: blur(44px);
+    opacity: 0.9;
+  }
+
+  .auth-bg__blob--gold {
+    top: -10%;
+    left: -8%;
+    width: min(42rem, 58vw);
+    height: min(42rem, 58vw);
+    background: radial-gradient(circle, rgba(244, 195, 0, 0.26) 0%, rgba(244, 195, 0, 0.08) 56%, transparent 74%);
+    animation: authBlobGold 18s ease-in-out infinite;
+  }
+
+  .auth-bg__blob--cream {
+    right: -10%;
+    top: 10%;
+    width: min(38rem, 52vw);
+    height: min(38rem, 52vw);
+    background: radial-gradient(circle, rgba(255, 248, 211, 0.95) 0%, rgba(255, 248, 211, 0.45) 48%, transparent 74%);
+    animation: authBlobCream 22s ease-in-out infinite;
+  }
+
+  .auth-bg__blob--shadow {
+    right: 10%;
+    bottom: -18%;
+    width: min(34rem, 46vw);
+    height: min(34rem, 46vw);
+    background: radial-gradient(circle, rgba(26, 26, 26, 0.12) 0%, rgba(26, 26, 26, 0.04) 52%, transparent 76%);
+    animation: authBlobShadow 20s ease-in-out infinite;
+  }
+
+  .auth-bg__wash {
+    inset: 0;
+    border-radius: 0;
+    background:
+      radial-gradient(circle at 50% 22%, rgba(255, 255, 255, 0.78), transparent 40%),
+      radial-gradient(circle at 50% 100%, rgba(244, 195, 0, 0.08), transparent 42%);
+  }
+
+  @keyframes authBlobGold {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    50% {
+      transform: translate3d(5vw, 4vh, 0) scale(1.06);
+    }
+  }
+
+  @keyframes authBlobCream {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    50% {
+      transform: translate3d(-4vw, 5vh, 0) scale(1.05);
+    }
+  }
+
+  @keyframes authBlobShadow {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    50% {
+      transform: translate3d(-3vw, -4vh, 0) scale(1.08);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .auth-bg__blob {
+      filter: blur(36px);
+    }
+
+    .auth-bg__blob--gold {
+      width: 28rem;
+      height: 28rem;
+    }
+
+    .auth-bg__blob--cream {
+      width: 24rem;
+      height: 24rem;
+    }
+
+    .auth-bg__blob--shadow {
+      width: 22rem;
+      height: 22rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .auth-bg__blob {
+      animation: none;
+    }
+  }
+}

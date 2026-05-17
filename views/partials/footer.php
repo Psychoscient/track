@@ -2,7 +2,7 @@
     $showDashboardLink = $showDashboardLink ?? false;
 ?>
 
-<footer class="mt-auto border-t-4 border-ust-gold bg-ust-dark text-white">
+<footer class="relative z-10 mt-auto border-t-4 border-ust-gold bg-ust-dark text-white">
     <div class="max-w-7xl mx-auto px-6 py-8 lg:py-9">
         <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-[1.2fr_0.65fr_0.9fr_0.75fr] lg:gap-10 lg:items-start">
             <div class="max-w-xl">
