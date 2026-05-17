@@ -164,7 +164,7 @@
 
                         <div>
                             <label for="capacity" class="block text-sm font-semibold text-ust-dark mb-2">Capacity (optional)</label>
-                            <input type="number" id="capacity" class="create-event-field w-full rounded-lg border-2 border-gray-200 px-4 py-3 text-sm text-ust-dark placeholder-gray-400 focus:border-ust-gold focus:ring-2 focus:ring-ust-gold/20 transition bg-ust-cream" placeholder="0">
+                            <input type="text" inputmode="numeric" pattern="[0-9]*" id="capacity" class="create-event-field w-full rounded-lg border-2 border-gray-200 px-4 py-3 text-sm text-ust-dark placeholder-gray-400 focus:border-ust-gold focus:ring-2 focus:ring-ust-gold/20 transition bg-ust-cream" placeholder="0">
                         </div>
 
                         <div>
@@ -191,7 +191,10 @@
 
                         <div class="md:col-span-2">
                             <label for="description" class="block text-sm font-semibold text-ust-dark mb-2">Description</label>
-                            <textarea id="description" rows="5" class="create-event-field w-full rounded-lg border-2 border-gray-200 px-4 py-3 text-sm text-ust-dark placeholder-gray-400 focus:border-ust-gold focus:ring-2 focus:ring-ust-gold/20 transition bg-ust-cream resize-none" placeholder="Describe the event, who it is for, and what attendees should expect."></textarea>
+                            <div class="relative">
+                                <textarea id="description" maxlength="300" rows="5" class="create-event-field w-full rounded-lg border-2 border-gray-200 px-4 py-3 pb-9 text-sm text-ust-dark placeholder-gray-400 focus:border-ust-gold focus:ring-2 focus:ring-ust-gold/20 transition bg-ust-cream resize-none" placeholder="Describe the event, who it is for, and what attendees should expect."></textarea>
+                                <span id="descriptionCounter" class="pointer-events-none absolute bottom-3 left-4 text-xs font-semibold text-ust-gray">300 characters left</span>
+                            </div>
                         </div>
                     </div>
 

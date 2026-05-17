@@ -4,6 +4,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const clearEventFormBtn = document.getElementById('clearEventForm');
     const createStartDateTime = document.getElementById('startDateTime');
     const createEndDateTime = document.getElementById('endDateTime');
+    const createDescription = document.getElementById('description');
+    const createDescriptionCounter = document.getElementById('descriptionCounter');
+    const createCapacity = document.getElementById('capacity');
     const editEventModal = document.getElementById('editEventModal');
     const updateEventBtn = document.getElementById('updateEventBtn');
     const closeEditEventModal = document.getElementById('closeEditEventModal');
@@ -18,6 +21,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     initializeCreateDateConstraints();
+    initializeCreateDescriptionCounter();
+    initializeCreateCapacityInput();
 
     if (clearEventFormBtn) {
         clearEventFormBtn.addEventListener('click', function() {
@@ -177,6 +182,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         updateCreateDateConstraints();
+        updateCreateDescriptionCounter();
     }
 
     function openEditEventModal(eventData) {
@@ -310,6 +316,34 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    function initializeCreateDescriptionCounter() {
+        if (!createDescription || !createDescriptionCounter) {
+            return;
+        }
+
+        updateCreateDescriptionCounter();
+        createDescription.addEventListener('input', updateCreateDescriptionCounter);
+    }
+
+    function updateCreateDescriptionCounter() {
+        if (!createDescription || !createDescriptionCounter) {
+            return;
+        }
+
+        const remainingCharacters = Math.max(0, 300 - createDescription.value.length);
+        createDescriptionCounter.textContent = `${remainingCharacters} character${remainingCharacters === 1 ? '' : 's'} left`;
+    }
+
+    function initializeCreateCapacityInput() {
+        if (!createCapacity) {
+            return;
+        }
+
+        createCapacity.addEventListener('input', function() {
+            createCapacity.value = createCapacity.value.replace(/\D/g, '');
+        });
+    }
+
     function validateEventData(eventData, rejectPastStart) {
         if (!eventData.title || !eventData.description || !eventData.categoryID || !eventData.location || !eventData.startDateTime || !eventData.endDateTime || !eventData.statusID) {
             return {
@@ -322,6 +356,20 @@ document.addEventListener('DOMContentLoaded', function() {
             return {
                 status: false,
                 message: 'Capacity must be a positive number.'
+            };
+        }
+
+        if (rejectPastStart && eventData.description.length > 300) {
+            return {
+                status: false,
+                message: 'Description must be 300 characters or fewer.'
+            };
+        }
+
+        if (rejectPastStart && eventData.capacity && !/^\d+$/.test(eventData.capacity)) {
+            return {
+                status: false,
+                message: 'Capacity must be a whole number.'
             };
         }
 

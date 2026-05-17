@@ -91,6 +91,11 @@
                     return $futureStartValidation;
                 }
 
+                $createValidation = $this -> validateCreateEvent($description, $capacity);
+                if (!$createValidation['status']) {
+                    return $createValidation;
+                }
+
                 $response = $this -> eventModel -> createEvent($title, $description, $categoryID, $location, $capacity, $startDateTime, $endDateTime, $statusID, $userID);
 
                 if ($response === true) {
@@ -317,6 +322,26 @@
                 return [
                     "status" => false,
                     "message" => "Start date and time cannot be before the current time."
+                ];
+            }
+
+            return [
+                "status" => true
+            ];
+        }
+
+        private function validateCreateEvent($description, $capacity) {
+            if (strlen($description) > 300) {
+                return [
+                    "status" => false,
+                    "message" => "Description must be 300 characters or fewer."
+                ];
+            }
+
+            if ($capacity !== '' && (!ctype_digit((string)$capacity) || (int)$capacity <= 0)) {
+                return [
+                    "status" => false,
+                    "message" => "Capacity must be a whole number."
                 ];
             }
 
