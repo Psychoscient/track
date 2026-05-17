@@ -289,22 +289,23 @@
                     <i class="fas fa-list"></i>User Management
                 </h3>
             </div>
-            <table class="min-w-full text-sm text-left">
-                <thead class="bg-ust-light-bg border-b-2 border-ust-gold">
-                    <tr>
-                        <th class="p-4 font-semibold text-ust-dark"><i class="fas fa-hashtag mr-2"></i>User ID</th>
-                        <th class="p-4 font-semibold text-ust-dark">First Name</th>
-                        <th class="p-4 font-semibold text-ust-dark">Last Name</th>
-                        <th class="p-4 font-semibold text-ust-dark">Email</th>
-                        <th class="p-4 font-semibold text-ust-dark">Year Level</th>
-                        <th class="p-4 font-semibold text-ust-dark">Role</th>
-                        <th class="p-4 font-semibold text-ust-dark">Created</th>
-                        <th class="p-4 font-semibold text-ust-dark">Updated</th>
-                        <th class="p-4 font-semibold text-ust-dark">Actions</th>
-                    </tr>
-                </thead>
+            <div class="overflow-x-auto">
+                <table class="min-w-full text-sm text-left">
+                    <thead class="bg-ust-light-bg border-b-2 border-ust-gold">
+                        <tr>
+                            <th class="p-4 font-semibold text-ust-dark"><i class="fas fa-hashtag mr-2"></i>User ID</th>
+                            <th class="p-4 font-semibold text-ust-dark">First Name</th>
+                            <th class="p-4 font-semibold text-ust-dark">Last Name</th>
+                            <th class="p-4 font-semibold text-ust-dark">Email</th>
+                            <th class="p-4 font-semibold text-ust-dark">Year Level</th>
+                            <th class="p-4 font-semibold text-ust-dark">Role</th>
+                            <th class="p-4 font-semibold text-ust-dark">Created</th>
+                            <th class="p-4 font-semibold text-ust-dark">Updated</th>
+                            <th class="min-w-[11rem] p-4 font-semibold text-ust-dark whitespace-nowrap">Actions</th>
+                        </tr>
+                    </thead>
 
-                <tbody>
+                    <tbody>
                     <?php  
                         usort($usersDetails, function($a, $b) {
                             return $a['user_id'] <=> $b['user_id'];
@@ -329,8 +330,8 @@
                                 </td>
                                 <td class="p-4 text-ust-gray text-xs"><?= $user['user_created_at'] ?></td>
                                 <td class="p-4 text-ust-gray text-xs"><?= $user['user_updated_at'] ?></td>
-                                <td class="p-4">
-                                    <div class="flex items-center gap-2">
+                                <td class="min-w-[11rem] p-4 whitespace-nowrap">
+                                    <div class="flex items-center gap-3">
                                         <button
                                             id="editBtn" 
                                             class="dashboard-btn flex items-center gap-1 px-3 py-1.5 text-sm font-semibold text-white bg-ust-gold hover:bg-ust-gold-dark rounded-lg transition"
@@ -360,8 +361,9 @@
                             </td>
                         </tr>
                     <?php endif; ?>
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         </section>
 
         <section id="applications" class="scroll-mt-6 bg-white shadow-ust rounded-lg overflow-hidden border border-gray-100 mt-8">
