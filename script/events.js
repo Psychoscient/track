@@ -2,6 +2,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const logoutBtn = document.getElementById('logout');
     const createEventBtn = document.getElementById('createEventBtn');
     const clearEventFormBtn = document.getElementById('clearEventForm');
+    const createStartDateTime = document.getElementById('startDateTime');
+    const createEndDateTime = document.getElementById('endDateTime');
     const editEventModal = document.getElementById('editEventModal');
     const updateEventBtn = document.getElementById('updateEventBtn');
     const closeEditEventModal = document.getElementById('closeEditEventModal');
@@ -15,6 +17,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    initializeCreateDateConstraints();
+
     if (clearEventFormBtn) {
         clearEventFormBtn.addEventListener('click', function() {
             resetCreateEventForm();
@@ -26,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
 
             const eventData = getCreateEventData();
-            const validation = validateEventData(eventData);
+            const validation = validateEventData(eventData, true);
 
             if (!validation.status) {
                 showError(validation.message);
@@ -93,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
 
             const eventData = getEditEventData();
-            const validation = validateEventData(eventData);
+            const validation = validateEventData(eventData, false);
 
             if (!validation.status) {
                 showError(validation.message);
@@ -171,6 +175,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const draftOption = Array.from(statusField.options).find((option) => option.text.toLowerCase() === 'draft');
             statusField.value = draftOption ? draftOption.value : '';
         }
+
+        updateCreateDateConstraints();
     }
 
     function openEditEventModal(eventData) {
@@ -272,7 +278,39 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     }
 
-    function validateEventData(eventData) {
+    function initializeCreateDateConstraints() {
+        if (!createStartDateTime || !createEndDateTime) {
+            return;
+        }
+
+        updateCreateDateConstraints();
+
+        createStartDateTime.addEventListener('input', function() {
+            updateCreateDateConstraints();
+        });
+
+        window.setInterval(updateCreateDateConstraints, 60000);
+    }
+
+    function updateCreateDateConstraints() {
+        if (!createStartDateTime || !createEndDateTime) {
+            return;
+        }
+
+        const currentDateTime = getLocalDateTimeValue(new Date());
+        const earliestEndDateTime = createStartDateTime.value && createStartDateTime.value > currentDateTime
+            ? createStartDateTime.value
+            : currentDateTime;
+
+        createStartDateTime.min = currentDateTime;
+        createEndDateTime.min = earliestEndDateTime;
+
+        if (createEndDateTime.value && createEndDateTime.value < earliestEndDateTime) {
+            createEndDateTime.value = '';
+        }
+    }
+
+    function validateEventData(eventData, rejectPastStart) {
         if (!eventData.title || !eventData.description || !eventData.categoryID || !eventData.location || !eventData.startDateTime || !eventData.endDateTime || !eventData.statusID) {
             return {
                 status: false,
@@ -284,6 +322,13 @@ document.addEventListener('DOMContentLoaded', function() {
             return {
                 status: false,
                 message: 'Capacity must be a positive number.'
+            };
+        }
+
+        if (rejectPastStart && eventData.startDateTime < getLocalDateTimeValue(new Date())) {
+            return {
+                status: false,
+                message: 'Start date and time cannot be before the current time.'
             };
         }
 
@@ -301,6 +346,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function formatDateTimeForInput(dateTime) {
         return dateTime ? dateTime.replace(' ', 'T').slice(0, 16) : '';
+    }
+
+    function getLocalDateTimeValue(date) {
+        const localDate = new Date(date.getTime() - (date.getTimezoneOffset() * 60000));
+        return localDate.toISOString().slice(0, 16);
     }
 
     function showError(message) {

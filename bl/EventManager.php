@@ -86,6 +86,11 @@
                     return $validation;
                 }
 
+                $futureStartValidation = $this -> validateFutureStart($startDateTime);
+                if (!$futureStartValidation['status']) {
+                    return $futureStartValidation;
+                }
+
                 $response = $this -> eventModel -> createEvent($title, $description, $categoryID, $location, $capacity, $startDateTime, $endDateTime, $statusID, $userID);
 
                 if ($response === true) {
@@ -296,6 +301,22 @@
                 return [
                     "status" => false,
                     "message" => "Invalid event category."
+                ];
+            }
+
+            return [
+                "status" => true
+            ];
+        }
+
+        private function validateFutureStart($startDateTime) {
+            $start = strtotime($startDateTime);
+            $currentMinute = strtotime(date('Y-m-d H:i'));
+
+            if (!$start || $start < $currentMinute) {
+                return [
+                    "status" => false,
+                    "message" => "Start date and time cannot be before the current time."
                 ];
             }
 
