@@ -492,6 +492,199 @@
     font-size: 0.9rem;
   }
 
+  .management-table-toolbar {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    border-bottom: 1px solid rgba(26, 26, 26, 0.08);
+    padding: 1rem 1.5rem;
+  }
+
+  .management-table-search {
+    position: relative;
+    width: 100%;
+  }
+
+  .management-table-search i {
+    pointer-events: none;
+    position: absolute;
+    left: 0.85rem;
+    top: 50%;
+    color: #6b7280;
+    font-size: 0.8rem;
+    transform: translateY(-50%);
+  }
+
+  .management-table-search .input-field {
+    width: 100%;
+    min-height: 2.5rem;
+    border-radius: 0.5rem;
+    border: 1px solid rgba(26, 26, 26, 0.12);
+    background: #fbf8f3;
+    padding: 0.625rem 0.85rem 0.625rem 2.35rem;
+    color: #1a1a1a;
+    font-size: 0.875rem;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease,
+      background-color 0.2s ease;
+  }
+
+  .management-table-search .input-field:focus {
+    border-color: #f4c300;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(244, 195, 0, 0.16);
+    outline: none;
+  }
+
+  .management-table-summary {
+    color: #6b7280;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  .management-table-wrap {
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .management-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    color: #1a1a1a;
+    font-size: 0.76rem;
+    line-height: 1.35;
+  }
+
+  .management-table th,
+  .management-table td {
+    padding: 0.7rem 0.5rem;
+    vertical-align: top;
+    overflow-wrap: anywhere;
+  }
+
+  .management-table th {
+    color: #1a1a1a;
+    font-weight: 700;
+  }
+
+  .management-table__email {
+    font-size: 0.72rem;
+    line-height: 1.45;
+  }
+
+  .management-table__date {
+    font-size: 0.72rem;
+    white-space: nowrap;
+  }
+
+  .management-table__badge {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 9999px;
+    padding: 0.18rem 0.45rem;
+    font-size: 0.68rem;
+    font-weight: 700;
+    line-height: 1.25;
+  }
+
+  .management-table__reason {
+    font-size: 0.74rem;
+    line-height: 1.45;
+  }
+
+  .management-table__actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.35rem;
+  }
+
+  .management-icon-btn {
+    display: inline-flex;
+    width: 1.9rem;
+    height: 1.9rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.5rem;
+    color: #fff;
+    font-size: 0.8rem;
+    transition:
+      background-color 0.2s ease,
+      transform 0.2s ease;
+  }
+
+  .management-icon-btn:hover {
+    transform: translateY(-1px);
+  }
+
+  .management-table--users th:nth-child(1),
+  .management-table--users td:nth-child(1) {
+    width: 7%;
+  }
+
+  .management-table--users th:nth-child(2),
+  .management-table--users td:nth-child(2),
+  .management-table--users th:nth-child(3),
+  .management-table--users td:nth-child(3) {
+    width: 11%;
+  }
+
+  .management-table--users th:nth-child(4),
+  .management-table--users td:nth-child(4) {
+    width: 19%;
+  }
+
+  .management-table--users th:nth-child(5),
+  .management-table--users td:nth-child(5),
+  .management-table--users th:nth-child(6),
+  .management-table--users td:nth-child(6) {
+    width: 11%;
+  }
+
+  .management-table--users th:nth-child(7),
+  .management-table--users td:nth-child(7),
+  .management-table--users th:nth-child(8),
+  .management-table--users td:nth-child(8) {
+    width: 10%;
+  }
+
+  .management-table--users th:nth-child(9),
+  .management-table--users td:nth-child(9) {
+    width: 10%;
+  }
+
+  .management-table--applications th:nth-child(1),
+  .management-table--applications td:nth-child(1) {
+    width: 17%;
+  }
+
+  .management-table--applications th:nth-child(2),
+  .management-table--applications td:nth-child(2) {
+    width: 19%;
+  }
+
+  .management-table--applications th:nth-child(3),
+  .management-table--applications td:nth-child(3) {
+    width: 14%;
+  }
+
+  .management-table--applications th:nth-child(4),
+  .management-table--applications td:nth-child(4) {
+    width: 28%;
+  }
+
+  .management-table--applications th:nth-child(5),
+  .management-table--applications td:nth-child(5) {
+    width: 12%;
+  }
+
+  .management-table--applications th:nth-child(6),
+  .management-table--applications td:nth-child(6) {
+    width: 10%;
+  }
+
   @keyframes authBlobGold {
     0%,
     100% {
@@ -565,6 +758,16 @@
 
     .signup-form-card {
       padding: 2rem;
+    }
+
+    .management-table-toolbar {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .management-table-search {
+      max-width: 18rem;
     }
   }
 

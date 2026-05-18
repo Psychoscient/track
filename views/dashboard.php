@@ -289,32 +289,32 @@
                     <i class="fas fa-list"></i>User Management
                 </h3>
             </div>
-            <div class="flex flex-col gap-3 border-b border-gray-100 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
+            <div class="management-table-toolbar">
                 <label for="userTableSearch" class="sr-only">Search users</label>
-                <div class="relative w-full sm:max-w-sm">
-                    <i class="fas fa-search pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sm text-ust-gray"></i>
+                <div class="management-table-search">
+                    <i class="fas fa-search" aria-hidden="true"></i>
                     <input
                         id="userTableSearch"
                         type="search"
                         placeholder="Search users"
-                        class="w-full rounded-lg border-2 border-gray-200 bg-ust-cream py-2.5 pl-10 pr-4 text-sm text-ust-dark placeholder-gray-400 focus:border-ust-gold focus:ring-2 focus:ring-ust-gold/20 transition"
+                        class="input-field"
                     >
                 </div>
-                <p id="userTableSummary" class="text-sm text-ust-gray"></p>
+                <p id="userTableSummary" class="management-table-summary"></p>
             </div>
-            <div class="overflow-x-auto">
-                <table id="userManagementTable" class="min-w-full text-sm text-left" data-page-size="10">
+            <div class="management-table-wrap">
+                <table id="userManagementTable" class="management-table management-table--users" data-page-size="10">
                     <thead class="bg-ust-light-bg border-b-2 border-ust-gold">
                         <tr>
-                            <th class="p-4 font-semibold text-ust-dark"><i class="fas fa-hashtag mr-2"></i>User ID</th>
-                            <th class="p-4 font-semibold text-ust-dark">First Name</th>
-                            <th class="p-4 font-semibold text-ust-dark">Last Name</th>
-                            <th class="p-4 font-semibold text-ust-dark">Email</th>
-                            <th class="p-4 font-semibold text-ust-dark">Year Level</th>
-                            <th class="p-4 font-semibold text-ust-dark">Role</th>
-                            <th class="p-4 font-semibold text-ust-dark">Created</th>
-                            <th class="p-4 font-semibold text-ust-dark">Updated</th>
-                            <th class="min-w-[11rem] p-4 font-semibold text-ust-dark whitespace-nowrap">Actions</th>
+                            <th><i class="fas fa-hashtag mr-2"></i>User ID</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Email</th>
+                            <th>Year Level</th>
+                            <th>Role</th>
+                            <th>Created</th>
+                            <th>Updated</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
 
@@ -327,40 +327,46 @@
                     <?php if (!empty($usersDetails)) : ?>
                         <?php foreach($usersDetails as $index => $user) : ?>
                             <tr class="border-b hover:bg-ust-cream/50 transition" data-table-row>
-                                <td class="p-4 font-semibold text-ust-gold"><?= $user['user_id'] ?></td>
-                                <td class="p-4 text-ust-dark"><?= $user['first_name'] ?></td>
-                                <td class="p-4 text-ust-dark"><?= $user['last_name'] ?></td>
-                                <td class="p-4 text-ust-gray text-xs"><?= $user['email'] ?></td>
-                                <td class="p-4" data-year-level-id="<?= $user['year_lvl_id'] ?? '' ?>">
-                                    <span class="inline-block px-3 py-1 bg-ust-gold/10 text-ust-dark text-xs font-semibold rounded-full">
+                                <td class="font-semibold text-ust-gold"><?= $user['user_id'] ?></td>
+                                <td class="text-ust-dark"><?= $user['first_name'] ?></td>
+                                <td class="text-ust-dark"><?= $user['last_name'] ?></td>
+                                <td class="management-table__email text-ust-gray"><?= $user['email'] ?></td>
+                                <td data-year-level-id="<?= $user['year_lvl_id'] ?? '' ?>">
+                                    <span class="management-table__badge bg-ust-gold/10 text-ust-dark">
                                         <?= $user['year_lvl_name'] ?>
                                     </span>
                                 </td>
-                                <td class="p-4" data-role-id="<?= $user['role_id'] ?? '' ?>">
-                                    <span class="inline-block px-3 py-1 bg-ust-gold/20 text-ust-dark text-xs font-semibold rounded-full">
+                                <td data-role-id="<?= $user['role_id'] ?? '' ?>">
+                                    <span class="management-table__badge bg-ust-gold/20 text-ust-dark">
                                         <?= $user['role_name'] ?>
                                     </span>
                                 </td>
-                                <td class="p-4 text-ust-gray text-xs"><?= $user['user_created_at'] ?></td>
-                                <td class="p-4 text-ust-gray text-xs"><?= $user['user_updated_at'] ?></td>
-                                <td class="min-w-[11rem] p-4 whitespace-nowrap">
-                                    <div class="flex items-center gap-3">
+                                <td class="management-table__date text-ust-gray"><?= date('M j, Y', strtotime($user['user_created_at'])) ?></td>
+                                <td class="management-table__date text-ust-gray"><?= date('M j, Y', strtotime($user['user_updated_at'])) ?></td>
+                                <td>
+                                    <div class="management-table__actions">
                                         <button
                                             id="editBtn" 
-                                            class="dashboard-btn flex items-center gap-1 px-3 py-1.5 text-sm font-semibold text-white bg-ust-gold hover:bg-ust-gold-dark rounded-lg transition"
+                                            type="button"
+                                            class="dashboard-btn management-icon-btn bg-ust-gold hover:bg-ust-gold-dark"
                                             data-action="edit"
                                             data-userid="<?= $user['user_id'] ?>"
+                                            aria-label="Edit user <?= $user['user_id'] ?>"
+                                            title="Edit user"
                                         >
-                                            <i class="fas fa-edit"></i>Edit
+                                            <i class="fas fa-edit"></i>
                                         </button>
 
                                         <button 
                                             id="deleteBtn"
-                                            class="dashboard-btn flex items-center gap-1 px-3 py-1.5 text-sm font-semibold text-white bg-red-500 hover:bg-red-600 rounded-lg transition"
+                                            type="button"
+                                            class="dashboard-btn management-icon-btn bg-red-500 hover:bg-red-600"
                                             data-action="delete"
                                             data-userid="<?= $user['user_id'] ?>"
+                                            aria-label="Delete user <?= $user['user_id'] ?>"
+                                            title="Delete user"
                                         >
-                                            <i class="fas fa-trash"></i>Delete
+                                            <i class="fas fa-trash"></i>
                                         </button>
                                     </div>
                                 </td>
@@ -406,30 +412,30 @@
                 </h3>
             </div>
 
-            <div class="flex flex-col gap-3 border-b border-gray-100 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
+            <div class="management-table-toolbar">
                 <label for="applicationTableSearch" class="sr-only">Search organizer applications</label>
-                <div class="relative w-full sm:max-w-sm">
-                    <i class="fas fa-search pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sm text-ust-gray"></i>
+                <div class="management-table-search">
+                    <i class="fas fa-search" aria-hidden="true"></i>
                     <input
                         id="applicationTableSearch"
                         type="search"
                         placeholder="Search applications"
-                        class="w-full rounded-lg border-2 border-gray-200 bg-ust-cream py-2.5 pl-10 pr-4 text-sm text-ust-dark placeholder-gray-400 focus:border-ust-gold focus:ring-2 focus:ring-ust-gold/20 transition"
+                        class="input-field"
                     >
                 </div>
-                <p id="applicationTableSummary" class="text-sm text-ust-gray"></p>
+                <p id="applicationTableSummary" class="management-table-summary"></p>
             </div>
 
-            <div class="overflow-x-auto">
-                <table id="organizerApplicationsTable" class="min-w-full text-sm text-left" data-page-size="10">
+            <div class="management-table-wrap">
+                <table id="organizerApplicationsTable" class="management-table management-table--applications" data-page-size="10">
                     <thead class="bg-ust-light-bg border-b-2 border-ust-gold">
                         <tr>
-                            <th class="p-4 font-semibold text-ust-dark">Applicant</th>
-                            <th class="p-4 font-semibold text-ust-dark">Email</th>
-                            <th class="p-4 font-semibold text-ust-dark">Year Level</th>
-                            <th class="p-4 font-semibold text-ust-dark">Reason</th>
-                            <th class="p-4 font-semibold text-ust-dark">Submitted</th>
-                            <th class="p-4 font-semibold text-ust-dark">Actions</th>
+                            <th>Applicant</th>
+                            <th>Email</th>
+                            <th>Year Level</th>
+                            <th>Reason</th>
+                            <th>Submitted</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
 
@@ -437,42 +443,46 @@
                         <?php if (!empty($pendingApplications)) : ?>
                             <?php foreach($pendingApplications as $application) : ?>
                                 <tr class="border-b hover:bg-ust-cream/50 transition" data-table-row>
-                                    <td class="p-4 text-ust-dark font-semibold">
+                                    <td class="text-ust-dark font-semibold">
                                         <?= htmlspecialchars($application['first_name'] . ' ' . $application['last_name']) ?>
                                     </td>
-                                    <td class="p-4 text-ust-gray text-xs">
+                                    <td class="management-table__email text-ust-gray">
                                         <?= htmlspecialchars($application['email']) ?>
                                     </td>
-                                    <td class="p-4">
-                                        <span class="inline-block px-3 py-1 bg-ust-gold/10 text-ust-dark text-xs font-semibold rounded-full">
+                                    <td>
+                                        <span class="management-table__badge bg-ust-gold/10 text-ust-dark">
                                             <?= htmlspecialchars($application['year_lvl_name']) ?>
                                         </span>
                                     </td>
-                                    <td class="p-4 text-ust-gray max-w-md">
-                                        <div class="leading-6 whitespace-pre-line">
+                                    <td class="management-table__reason text-ust-gray">
+                                        <div class="whitespace-pre-line">
                                             <?= nl2br(htmlspecialchars($application['reason'])) ?>
                                         </div>
                                     </td>
-                                    <td class="p-4 text-ust-gray text-xs">
-                                        <?= date('M d, Y g:i A', strtotime($application['created_at'])) ?>
+                                    <td class="management-table__date text-ust-gray">
+                                        <?= date('M j, Y', strtotime($application['created_at'])) ?>
                                     </td>
-                                    <td class="p-4">
-                                        <div class="flex items-center gap-2 flex-wrap">
+                                    <td>
+                                        <div class="management-table__actions">
                                             <button
                                                 type="button"
-                                                class="application-action-btn flex items-center gap-1 px-3 py-1.5 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition"
+                                                class="application-action-btn management-icon-btn bg-emerald-600 hover:bg-emerald-700"
                                                 data-action="approve"
                                                 data-applicationid="<?= $application['organizer_application_id'] ?>"
+                                                aria-label="Approve application <?= $application['organizer_application_id'] ?>"
+                                                title="Approve application"
                                             >
-                                                <i class="fas fa-check"></i>Approve
+                                                <i class="fas fa-check"></i>
                                             </button>
                                             <button
                                                 type="button"
-                                                class="application-action-btn flex items-center gap-1 px-3 py-1.5 text-sm font-semibold text-white bg-red-500 hover:bg-red-600 rounded-lg transition"
+                                                class="application-action-btn management-icon-btn bg-red-500 hover:bg-red-600"
                                                 data-action="reject"
                                                 data-applicationid="<?= $application['organizer_application_id'] ?>"
+                                                aria-label="Reject application <?= $application['organizer_application_id'] ?>"
+                                                title="Reject application"
                                             >
-                                                <i class="fas fa-times"></i>Reject
+                                                <i class="fas fa-times"></i>
                                             </button>
                                         </div>
                                     </td>
