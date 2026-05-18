@@ -306,8 +306,8 @@
                 <table id="userManagementTable" class="management-table management-table--users" data-page-size="10">
                     <thead class="bg-ust-light-bg border-b-2 border-ust-gold">
                         <tr>
-                            <th><i class="fas fa-hashtag mr-2"></i>User ID</th>
-                            <th>First Name</th>
+                            <th>ID</th>
+                            <th>First Name</th>     
                             <th>Last Name</th>
                             <th>Email</th>
                             <th>Year Level</th>
@@ -341,8 +341,8 @@
                                         <?= $user['role_name'] ?>
                                     </span>
                                 </td>
-                                <td class="management-table__date text-ust-gray"><?= date('M j, Y', strtotime($user['user_created_at'])) ?></td>
-                                <td class="management-table__date text-ust-gray"><?= date('M j, Y', strtotime($user['user_updated_at'])) ?></td>
+                                <td class="management-table__date text-ust-gray"><?= date('M j, Y g:i A', strtotime($user['user_created_at'])) ?></td>
+                                <td class="management-table__date text-ust-gray"><?= date('M j, Y g:i A', strtotime($user['user_updated_at'])) ?></td>
                                 <td>
                                     <div class="management-table__actions">
                                         <button
