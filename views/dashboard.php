@@ -341,8 +341,14 @@
                                         <?= $user['role_name'] ?>
                                     </span>
                                 </td>
-                                <td class="management-table__date text-ust-gray"><?= date('M j, Y g:i A', strtotime($user['user_created_at'])) ?></td>
-                                <td class="management-table__date text-ust-gray"><?= date('M j, Y g:i A', strtotime($user['user_updated_at'])) ?></td>
+                                <td class="management-table__date text-ust-gray" title="<?= date('M j, Y g:i A', strtotime($user['user_created_at'])) ?>">
+                                    <span><?= date('M j, Y', strtotime($user['user_created_at'])) ?></span>
+                                    <span><?= date('g:i A', strtotime($user['user_created_at'])) ?></span>
+                                </td>
+                                <td class="management-table__date text-ust-gray" title="<?= date('M j, Y g:i A', strtotime($user['user_updated_at'])) ?>">
+                                    <span><?= date('M j, Y', strtotime($user['user_updated_at'])) ?></span>
+                                    <span><?= date('g:i A', strtotime($user['user_updated_at'])) ?></span>
+                                </td>
                                 <td>
                                     <div class="management-table__actions">
                                         <button

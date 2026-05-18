@@ -576,6 +576,11 @@
 
   .management-table__date {
     font-size: 0.72rem;
+    line-height: 1.35;
+  }
+
+  .management-table--users .management-table__date span {
+    display: block;
     white-space: nowrap;
   }
 
