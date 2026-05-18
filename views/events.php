@@ -253,13 +253,28 @@
             </div>
 
             <?php if (!empty($events)) : ?>
-                <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
-                    <?php foreach($events as $event) : ?>
-                        <?php
-                            $isOwner = (int)$event['created_by'] === (int)$_SESSION['user_id'];
-                            $canEditThisEvent = $canManageEvents && ($isAdmin || $isOwner);
-                        ?>
-                        <article class="group bg-white shadow-ust rounded-2xl border border-gray-100 overflow-hidden hover:shadow-ust-md transition">
+                <div class="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-ust">
+                    <div class="management-table-toolbar">
+                        <label for="eventTableSearch" class="sr-only">Search events</label>
+                        <div class="management-table-search">
+                            <i class="fas fa-search" aria-hidden="true"></i>
+                            <input
+                                id="eventTableSearch"
+                                type="search"
+                                placeholder="Search events"
+                                class="input-field"
+                            >
+                        </div>
+                        <p id="eventTableSummary" class="management-table-summary"></p>
+                    </div>
+
+                    <div id="eventManagementList" class="grid grid-cols-1 gap-6 p-6 xl:grid-cols-2" data-page-size="6">
+                        <?php foreach($events as $event) : ?>
+                            <?php
+                                $isOwner = (int)$event['created_by'] === (int)$_SESSION['user_id'];
+                                $canEditThisEvent = $canManageEvents && ($isAdmin || $isOwner);
+                            ?>
+                            <article class="group bg-white shadow-ust rounded-2xl border border-gray-100 overflow-hidden hover:shadow-ust-md transition" data-list-row>
                             <div class="h-2 bg-gradient-to-r from-ust-gold via-[#FFE48C] to-ust-gold"></div>
                             <div class="p-6">
                                 <div class="flex items-start justify-between gap-4">
@@ -347,8 +362,29 @@
                                     <?php endif; ?>
                                 </div>
                             </div>
-                        </article>
-                    <?php endforeach; ?>
+                            </article>
+                        <?php endforeach; ?>
+                    </div>
+                    <div id="eventTablePagination" class="flex flex-col gap-3 border-t border-gray-100 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
+                        <p data-pagination-status class="text-sm text-ust-gray"></p>
+                        <div class="flex items-center gap-2">
+                            <button
+                                type="button"
+                                data-pagination-prev
+                                class="rounded-lg border-2 border-ust-gold px-4 py-2 text-sm font-semibold text-ust-gold transition hover:bg-ust-gold/5 disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-400 disabled:hover:bg-transparent"
+                            >
+                                Previous
+                            </button>
+                            <span data-pagination-pages class="min-w-[5rem] text-center text-sm font-semibold text-ust-dark"></span>
+                            <button
+                                type="button"
+                                data-pagination-next
+                                class="rounded-lg border-2 border-ust-gold px-4 py-2 text-sm font-semibold text-ust-gold transition hover:bg-ust-gold/5 disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-400 disabled:hover:bg-transparent"
+                            >
+                                Next
+                            </button>
+                        </div>
+                    </div>
                 </div>
             <?php else : ?>
                 <div class="bg-white rounded-2xl border border-dashed border-ust-gold/40 shadow-ust p-10 text-center">

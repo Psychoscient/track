@@ -43,6 +43,101 @@
         return $event['event_status_name'] === 'cancelled';
     }));
 
+    $eventStatusChartData = [];
+    foreach ($statuses as $status) {
+        $eventStatusChartData[ucfirst($status['event_status_name'])] = 0;
+    }
+
+    $eventCategoryChartData = [];
+    foreach ($categories as $category) {
+        $eventCategoryChartData[$category['event_category_name']] = 0;
+    }
+
+    $eventTimelineChartData = [];
+    for ($monthOffset = 5; $monthOffset >= 0; $monthOffset--) {
+        $monthKey = date('Y-m', strtotime("first day of -{$monthOffset} months"));
+        $eventTimelineChartData[$monthKey] = [
+            'label' => date('M Y', strtotime($monthKey . '-01')),
+            'count' => 0
+        ];
+    }
+
+    $eventScheduleChartData = [
+        'Upcoming' => 0,
+        'Happening now' => 0,
+        'Ended' => 0
+    ];
+    $eventVenueChartData = [];
+    $eventsThisMonth = 0;
+    $upcomingEvents = 0;
+    $totalCapacity = 0;
+    $currentDateTime = time();
+    $currentMonth = date('Y-m');
+
+    foreach ($events as $event) {
+        $statusName = ucfirst($event['event_status_name'] ?? 'Unassigned');
+        if (!isset($eventStatusChartData[$statusName])) {
+            $eventStatusChartData[$statusName] = 0;
+        }
+        $eventStatusChartData[$statusName]++;
+
+        $categoryName = $event['event_category_name'] ?? 'Unassigned';
+        if (!isset($eventCategoryChartData[$categoryName])) {
+            $eventCategoryChartData[$categoryName] = 0;
+        }
+        $eventCategoryChartData[$categoryName]++;
+
+        $startAt = strtotime($event['start_datetime'] ?? '');
+        $endAt = strtotime($event['end_datetime'] ?? '');
+        if ($startAt) {
+            $eventMonth = date('Y-m', $startAt);
+            if (isset($eventTimelineChartData[$eventMonth])) {
+                $eventTimelineChartData[$eventMonth]['count']++;
+            }
+            if ($eventMonth === $currentMonth) {
+                $eventsThisMonth++;
+            }
+        }
+
+        if ($startAt && $startAt > $currentDateTime) {
+            $eventScheduleChartData['Upcoming']++;
+            $upcomingEvents++;
+        } elseif ($startAt && $endAt && $startAt <= $currentDateTime && $endAt >= $currentDateTime) {
+            $eventScheduleChartData['Happening now']++;
+        } else {
+            $eventScheduleChartData['Ended']++;
+        }
+
+        $venueName = $event['event_venue_name'] ?: ($event['location'] ?: 'Unassigned venue');
+        if (!isset($eventVenueChartData[$venueName])) {
+            $eventVenueChartData[$venueName] = 0;
+        }
+        $eventVenueChartData[$venueName]++;
+
+        $capacityValue = $event['estimated_capacity'] ?: $event['capacity'];
+        if ($capacityValue) {
+            $totalCapacity += (int)$capacityValue;
+        }
+    }
+
+    arsort($eventVenueChartData);
+    $eventVenueChartData = array_slice($eventVenueChartData, 0, 8, true);
+
+    $eventAnalyticsData = [
+        'statuses' => $eventStatusChartData,
+        'categories' => $eventCategoryChartData,
+        'timeline' => array_values($eventTimelineChartData),
+        'schedule' => $eventScheduleChartData,
+        'venues' => $eventVenueChartData,
+        'summary' => [
+            'totalEvents' => count($events),
+            'publishedEvents' => $publishedCount,
+            'eventsThisMonth' => $eventsThisMonth,
+            'upcomingEvents' => $upcomingEvents,
+            'totalCapacity' => $totalCapacity
+        ]
+    ];
+
     function formatEventDate($dateTime) {
         return date('M d, Y g:i A', strtotime($dateTime));
     }
@@ -69,6 +164,7 @@
     <link rel="stylesheet" href="../public/output.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="../script/swal-theme.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -123,6 +219,16 @@
                                 <i class="fas fa-ban"></i>Cancelled
                             </div>
                         </div>
+                    </div>
+                    <div class="mt-5 flex justify-end">
+                        <button
+                            id="openEventChartsBtn"
+                            type="button"
+                            class="dashboard-btn inline-flex items-center justify-center gap-2 rounded-lg bg-ust-gold px-5 py-3 text-sm font-semibold text-white shadow-ust transition duration-200 hover:bg-ust-gold-dark"
+                        >
+                            <i class="fas fa-chart-pie"></i>
+                            View Event Charts
+                        </button>
                     </div>
                 </div>
             </section>
@@ -236,9 +342,24 @@
                 </div>
 
                 <?php if (!empty($events)) : ?>
-                    <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
-                        <?php foreach($events as $event) : ?>
-                            <article class="group bg-white shadow-ust rounded-2xl border border-gray-100 overflow-hidden hover:shadow-ust-md transition">
+                    <div class="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-ust">
+                        <div class="management-table-toolbar">
+                            <label for="eventTableSearch" class="sr-only">Search events</label>
+                            <div class="management-table-search">
+                                <i class="fas fa-search" aria-hidden="true"></i>
+                                <input
+                                    id="eventTableSearch"
+                                    type="search"
+                                    placeholder="Search events"
+                                    class="input-field"
+                                >
+                            </div>
+                            <p id="eventTableSummary" class="management-table-summary"></p>
+                        </div>
+
+                        <div id="eventManagementList" class="grid grid-cols-1 gap-6 p-6 xl:grid-cols-2" data-page-size="6">
+                            <?php foreach($events as $event) : ?>
+                                <article class="group bg-white shadow-ust rounded-2xl border border-gray-100 overflow-hidden hover:shadow-ust-md transition" data-list-row>
                                 <div class="h-2 bg-gradient-to-r from-ust-gold via-[#FFE48C] to-ust-gold"></div>
                                 <div class="p-6">
                                     <div class="flex items-start justify-between gap-4">
@@ -319,8 +440,29 @@
                                         </div>
                                     </div>
                                 </div>
-                            </article>
-                        <?php endforeach; ?>
+                                </article>
+                            <?php endforeach; ?>
+                        </div>
+                        <div id="eventTablePagination" class="flex flex-col gap-3 border-t border-gray-100 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
+                            <p data-pagination-status class="text-sm text-ust-gray"></p>
+                            <div class="flex items-center gap-2">
+                                <button
+                                    type="button"
+                                    data-pagination-prev
+                                    class="rounded-lg border-2 border-ust-gold px-4 py-2 text-sm font-semibold text-ust-gold transition hover:bg-ust-gold/5 disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-400 disabled:hover:bg-transparent"
+                                >
+                                    Previous
+                                </button>
+                                <span data-pagination-pages class="min-w-[5rem] text-center text-sm font-semibold text-ust-dark"></span>
+                                <button
+                                    type="button"
+                                    data-pagination-next
+                                    class="rounded-lg border-2 border-ust-gold px-4 py-2 text-sm font-semibold text-ust-gold transition hover:bg-ust-gold/5 disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-400 disabled:hover:bg-transparent"
+                                >
+                                    Next
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 <?php else : ?>
                     <div class="bg-white rounded-2xl border border-dashed border-ust-gold/40 shadow-ust p-10 text-center">
@@ -335,6 +477,134 @@
                 <?php endif; ?>
             </section>
         </main>
+    </div>
+
+    <div id="eventChartModal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4">
+        <div class="relative w-full max-w-6xl max-h-[92vh] overflow-y-auto rounded-[1.75rem] bg-ust-light-bg shadow-ust-md border border-white/70">
+            <div class="sticky top-0 z-10 overflow-hidden rounded-t-[1.75rem] border-b-4 border-ust-gold bg-ust-dark px-6 py-5 text-white">
+                <div class="absolute inset-0 opacity-20" aria-hidden="true">
+                    <div class="absolute -right-16 -top-20 h-44 w-44 rounded-full bg-ust-gold blur-3xl"></div>
+                    <div class="absolute left-1/3 top-8 h-24 w-24 rounded-full bg-white blur-3xl"></div>
+                </div>
+                <div class="relative flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-[0.26em] text-ust-gold">Analytics</p>
+                        <h2 class="mt-2 text-2xl font-heading font-bold flex items-center gap-3">
+                            <i class="fas fa-chart-pie"></i>Event Management Insights
+                        </h2>
+                        <p class="mt-2 max-w-2xl text-sm text-white/75">
+                            Status mix, category demand, monthly schedule volume, venue usage, and event timing health.
+                        </p>
+                    </div>
+                    <button
+                        type="button"
+                        data-close-event-charts
+                        class="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white transition hover:border-ust-gold hover:text-ust-gold"
+                        aria-label="Close event charts"
+                    >
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="p-5 md:p-6">
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-5">
+                    <div class="rounded-2xl border border-gray-100 bg-white p-5 shadow-ust">
+                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-ust-gray">Total Events</p>
+                        <p class="mt-3 text-3xl font-heading font-bold text-ust-dark" data-event-analytics-total>0</p>
+                    </div>
+                    <div class="rounded-2xl border border-gray-100 bg-white p-5 shadow-ust">
+                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-ust-gray">Published</p>
+                        <p class="mt-3 text-3xl font-heading font-bold text-ust-gold" data-event-analytics-published>0</p>
+                    </div>
+                    <div class="rounded-2xl border border-gray-100 bg-white p-5 shadow-ust">
+                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-ust-gray">This Month</p>
+                        <p class="mt-3 text-3xl font-heading font-bold text-ust-dark" data-event-analytics-month>0</p>
+                    </div>
+                    <div class="rounded-2xl border border-gray-100 bg-white p-5 shadow-ust">
+                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-ust-gray">Upcoming</p>
+                        <p class="mt-3 text-3xl font-heading font-bold text-ust-dark" data-event-analytics-upcoming>0</p>
+                    </div>
+                    <div class="rounded-2xl border border-gray-100 bg-white p-5 shadow-ust">
+                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-ust-gray">Seat Capacity</p>
+                        <p class="mt-3 text-3xl font-heading font-bold text-ust-dark" data-event-analytics-capacity>0</p>
+                    </div>
+                </div>
+
+                <div class="mt-5 grid grid-cols-1 gap-5 xl:grid-cols-[0.9fr_1.1fr]">
+                    <div class="rounded-2xl border border-gray-100 bg-white p-5 shadow-ust">
+                        <div class="mb-4 flex items-start justify-between gap-3">
+                            <div>
+                                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-ust-gray">Publication Mix</p>
+                                <h3 class="mt-1 font-heading text-lg font-bold text-ust-dark">Events by Status</h3>
+                            </div>
+                            <span class="rounded-full bg-ust-gold/10 px-3 py-1 text-xs font-semibold text-ust-dark">Status</span>
+                        </div>
+                        <div class="h-72">
+                            <canvas id="eventStatusChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="rounded-2xl border border-gray-100 bg-white p-5 shadow-ust">
+                        <div class="mb-4 flex items-start justify-between gap-3">
+                            <div>
+                                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-ust-gray">Program Spread</p>
+                                <h3 class="mt-1 font-heading text-lg font-bold text-ust-dark">Events by Category</h3>
+                            </div>
+                            <span class="rounded-full bg-ust-gold/10 px-3 py-1 text-xs font-semibold text-ust-dark">Categories</span>
+                        </div>
+                        <div class="h-72">
+                            <canvas id="eventCategoryChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-5 grid grid-cols-1 gap-5 xl:grid-cols-2">
+                    <div class="rounded-2xl border border-gray-100 bg-white p-5 shadow-ust">
+                        <div class="mb-4">
+                            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-ust-gray">Calendar Momentum</p>
+                            <h3 class="mt-1 font-heading text-lg font-bold text-ust-dark">Events Over 6 Months</h3>
+                        </div>
+                        <div class="h-72">
+                            <canvas id="eventTimelineChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="rounded-2xl border border-gray-100 bg-white p-5 shadow-ust">
+                        <div class="mb-4">
+                            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-ust-gray">Timing Health</p>
+                            <h3 class="mt-1 font-heading text-lg font-bold text-ust-dark">Schedule Status</h3>
+                        </div>
+                        <div class="h-72">
+                            <canvas id="eventScheduleChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-5 rounded-2xl border border-gray-100 bg-white p-5 shadow-ust">
+                    <div class="mb-4 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+                        <div>
+                            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-ust-gray">Venue Load</p>
+                            <h3 class="mt-1 font-heading text-lg font-bold text-ust-dark">Top Venues by Event Count</h3>
+                        </div>
+                        <p class="text-sm text-ust-gray">Highlights which spaces carry the most scheduled activity.</p>
+                    </div>
+                    <div class="h-80">
+                        <canvas id="eventVenueChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="mt-6 flex justify-end">
+                    <button
+                        type="button"
+                        data-close-event-charts
+                        class="rounded-lg border-2 border-ust-gold px-6 py-3 text-sm font-semibold text-ust-gold transition duration-200 hover:bg-ust-gold/5"
+                    >
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <?php require __DIR__ . '/partials/footer.php'; ?>
@@ -434,6 +704,9 @@
     </div>
 
     <script src="../script/utils.js"></script>
+    <script>
+        window.eventAnalyticsData = <?= json_encode($eventAnalyticsData, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>;
+    </script>
     <script src="../script/events.js"></script>
     <script src="../script/management-nav.js"></script>
 </body>

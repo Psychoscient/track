@@ -63,3 +63,6 @@ coverage/
 # Local config
 local.php
 config.local.php
+
+# Misc
+references/
