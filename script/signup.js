@@ -57,9 +57,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         text: "User created successfully.",
                         icon: "success",
                         confirmButtonText: "OK"
+                    }).then((click) => {
+                        if (click.isConfirmed) {
+                            window.location.href = 'login.php';
+                        }
                     });
-                    
-                    Utils.resetFields();
                 }
             },
             error: function(xhr, status, error) {

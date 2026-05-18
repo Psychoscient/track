@@ -4,6 +4,24 @@ document.addEventListener('DOMContentLoaded', function() {
     const applicationButtons = document.querySelectorAll('.application-action-btn');
     const logoutBtn = document.getElementById('logout');
 
+    initializeManagedTable({
+        tableId: 'userManagementTable',
+        searchInputId: 'userTableSearch',
+        summaryId: 'userTableSummary',
+        paginationId: 'userTablePagination',
+        itemLabel: 'user',
+        emptyMessage: 'No matching users found.'
+    });
+
+    initializeManagedTable({
+        tableId: 'organizerApplicationsTable',
+        searchInputId: 'applicationTableSearch',
+        summaryId: 'applicationTableSummary',
+        paginationId: 'applicationTablePagination',
+        itemLabel: 'application',
+        emptyMessage: 'No matching organizer applications found.'
+    });
+
     logoutBtn.addEventListener('click', (e) => {
         e.preventDefault();
 
@@ -267,5 +285,117 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         });
+    }
+
+    function initializeManagedTable(config) {
+        const table = document.getElementById(config.tableId);
+        const searchInput = document.getElementById(config.searchInputId);
+        const summary = document.getElementById(config.summaryId);
+        const pagination = document.getElementById(config.paginationId);
+
+        if (!table || !searchInput || !summary || !pagination) {
+            return;
+        }
+
+        const tbody = table.querySelector('[data-table-body]');
+        const prevButton = pagination.querySelector('[data-pagination-prev]');
+        const nextButton = pagination.querySelector('[data-pagination-next]');
+        const pageLabel = pagination.querySelector('[data-pagination-pages]');
+        const paginationStatus = pagination.querySelector('[data-pagination-status]');
+        const pageSize = Number(table.dataset.pageSize) || 10;
+        const dataRows = Array.from(tbody.querySelectorAll('[data-table-row]'));
+        const originalEmptyRow = dataRows.length === 0 ? tbody.querySelector('tr') : null;
+        const noResultsRow = createNoResultsRow(table, config.emptyMessage);
+        let currentPage = 1;
+
+        function getSearchValue() {
+            return searchInput.value.trim().toLowerCase();
+        }
+
+        function getFilteredRows() {
+            const query = getSearchValue();
+
+            if (!query) {
+                return dataRows;
+            }
+
+            return dataRows.filter((row) => row.textContent.toLowerCase().includes(query));
+        }
+
+        function render() {
+            const filteredRows = getFilteredRows();
+            const totalRows = filteredRows.length;
+            const totalPages = Math.max(1, Math.ceil(totalRows / pageSize));
+            currentPage = Math.min(currentPage, totalPages);
+
+            dataRows.forEach((row) => row.classList.add('hidden'));
+            noResultsRow.remove();
+
+            if (originalEmptyRow) {
+                originalEmptyRow.classList.remove('hidden');
+            } else if (totalRows === 0) {
+                tbody.appendChild(noResultsRow);
+            } else {
+                const startIndex = (currentPage - 1) * pageSize;
+                const visibleRows = filteredRows.slice(startIndex, startIndex + pageSize);
+                visibleRows.forEach((row) => row.classList.remove('hidden'));
+            }
+
+            const visibleStart = totalRows === 0 ? 0 : ((currentPage - 1) * pageSize) + 1;
+            const visibleEnd = totalRows === 0 ? 0 : Math.min(currentPage * pageSize, totalRows);
+            const itemLabel = totalRows === 1 ? config.itemLabel : `${config.itemLabel}s`;
+
+            summary.textContent = totalRows === dataRows.length
+                ? `${totalRows} ${itemLabel}`
+                : `${totalRows} matching ${itemLabel}`;
+
+            paginationStatus.textContent = totalRows === 0
+                ? `Showing 0 of ${dataRows.length}`
+                : `Showing ${visibleStart}-${visibleEnd} of ${totalRows}`;
+
+            pageLabel.textContent = `Page ${currentPage} of ${totalPages}`;
+            prevButton.disabled = currentPage === 1 || totalRows === 0;
+            nextButton.disabled = currentPage === totalPages || totalRows === 0;
+            pagination.classList.toggle('hidden', dataRows.length === 0);
+        }
+
+        searchInput.addEventListener('input', function() {
+            currentPage = 1;
+            render();
+        });
+
+        prevButton.addEventListener('click', function() {
+            if (currentPage > 1) {
+                currentPage--;
+                render();
+            }
+        });
+
+        nextButton.addEventListener('click', function() {
+            const totalPages = Math.max(1, Math.ceil(getFilteredRows().length / pageSize));
+
+            if (currentPage < totalPages) {
+                currentPage++;
+                render();
+            }
+        });
+
+        render();
+    }
+
+    function createNoResultsRow(table, message) {
+        const row = document.createElement('tr');
+        const cell = document.createElement('td');
+        const columnCount = table.querySelectorAll('thead th').length;
+
+        cell.colSpan = columnCount;
+        cell.className = 'p-6 text-center text-ust-gray';
+        cell.innerHTML = `
+            <i class="fas fa-search text-2xl mb-2 block opacity-50"></i>
+            ${message}
+        `;
+
+        row.appendChild(cell);
+        return row;
     }
 });

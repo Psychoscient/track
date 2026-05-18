@@ -289,8 +289,21 @@
                     <i class="fas fa-list"></i>User Management
                 </h3>
             </div>
+            <div class="flex flex-col gap-3 border-b border-gray-100 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
+                <label for="userTableSearch" class="sr-only">Search users</label>
+                <div class="relative w-full sm:max-w-sm">
+                    <i class="fas fa-search pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sm text-ust-gray"></i>
+                    <input
+                        id="userTableSearch"
+                        type="search"
+                        placeholder="Search users"
+                        class="w-full rounded-lg border-2 border-gray-200 bg-ust-cream py-2.5 pl-10 pr-4 text-sm text-ust-dark placeholder-gray-400 focus:border-ust-gold focus:ring-2 focus:ring-ust-gold/20 transition"
+                    >
+                </div>
+                <p id="userTableSummary" class="text-sm text-ust-gray"></p>
+            </div>
             <div class="overflow-x-auto">
-                <table class="min-w-full text-sm text-left">
+                <table id="userManagementTable" class="min-w-full text-sm text-left" data-page-size="10">
                     <thead class="bg-ust-light-bg border-b-2 border-ust-gold">
                         <tr>
                             <th class="p-4 font-semibold text-ust-dark"><i class="fas fa-hashtag mr-2"></i>User ID</th>
@@ -305,7 +318,7 @@
                         </tr>
                     </thead>
 
-                    <tbody>
+                    <tbody data-table-body>
                     <?php  
                         usort($usersDetails, function($a, $b) {
                             return $a['user_id'] <=> $b['user_id'];
@@ -313,7 +326,7 @@
                     ?>
                     <?php if (!empty($usersDetails)) : ?>
                         <?php foreach($usersDetails as $index => $user) : ?>
-                            <tr class="border-b hover:bg-ust-cream/50 transition">
+                            <tr class="border-b hover:bg-ust-cream/50 transition" data-table-row>
                                 <td class="p-4 font-semibold text-ust-gold"><?= $user['user_id'] ?></td>
                                 <td class="p-4 text-ust-dark"><?= $user['first_name'] ?></td>
                                 <td class="p-4 text-ust-dark"><?= $user['last_name'] ?></td>
@@ -364,6 +377,26 @@
                     </tbody>
                 </table>
             </div>
+            <div id="userTablePagination" class="flex flex-col gap-3 border-t border-gray-100 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
+                <p data-pagination-status class="text-sm text-ust-gray"></p>
+                <div class="flex items-center gap-2">
+                    <button
+                        type="button"
+                        data-pagination-prev
+                        class="rounded-lg border-2 border-ust-gold px-4 py-2 text-sm font-semibold text-ust-gold transition hover:bg-ust-gold/5 disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-400 disabled:hover:bg-transparent"
+                    >
+                        Previous
+                    </button>
+                    <span data-pagination-pages class="min-w-[5rem] text-center text-sm font-semibold text-ust-dark"></span>
+                    <button
+                        type="button"
+                        data-pagination-next
+                        class="rounded-lg border-2 border-ust-gold px-4 py-2 text-sm font-semibold text-ust-gold transition hover:bg-ust-gold/5 disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-400 disabled:hover:bg-transparent"
+                    >
+                        Next
+                    </button>
+                </div>
+            </div>
         </section>
 
         <section id="applications" class="scroll-mt-6 bg-white shadow-ust rounded-lg overflow-hidden border border-gray-100 mt-8">
@@ -373,73 +406,109 @@
                 </h3>
             </div>
 
-            <table class="min-w-full text-sm text-left">
-                <thead class="bg-ust-light-bg border-b-2 border-ust-gold">
-                    <tr>
-                        <th class="p-4 font-semibold text-ust-dark">Applicant</th>
-                        <th class="p-4 font-semibold text-ust-dark">Email</th>
-                        <th class="p-4 font-semibold text-ust-dark">Year Level</th>
-                        <th class="p-4 font-semibold text-ust-dark">Reason</th>
-                        <th class="p-4 font-semibold text-ust-dark">Submitted</th>
-                        <th class="p-4 font-semibold text-ust-dark">Actions</th>
-                    </tr>
-                </thead>
+            <div class="flex flex-col gap-3 border-b border-gray-100 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
+                <label for="applicationTableSearch" class="sr-only">Search organizer applications</label>
+                <div class="relative w-full sm:max-w-sm">
+                    <i class="fas fa-search pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sm text-ust-gray"></i>
+                    <input
+                        id="applicationTableSearch"
+                        type="search"
+                        placeholder="Search applications"
+                        class="w-full rounded-lg border-2 border-gray-200 bg-ust-cream py-2.5 pl-10 pr-4 text-sm text-ust-dark placeholder-gray-400 focus:border-ust-gold focus:ring-2 focus:ring-ust-gold/20 transition"
+                    >
+                </div>
+                <p id="applicationTableSummary" class="text-sm text-ust-gray"></p>
+            </div>
 
-                <tbody>
-                    <?php if (!empty($pendingApplications)) : ?>
-                        <?php foreach($pendingApplications as $application) : ?>
-                            <tr class="border-b hover:bg-ust-cream/50 transition">
-                                <td class="p-4 text-ust-dark font-semibold">
-                                    <?= htmlspecialchars($application['first_name'] . ' ' . $application['last_name']) ?>
-                                </td>
-                                <td class="p-4 text-ust-gray text-xs">
-                                    <?= htmlspecialchars($application['email']) ?>
-                                </td>
-                                <td class="p-4">
-                                    <span class="inline-block px-3 py-1 bg-ust-gold/10 text-ust-dark text-xs font-semibold rounded-full">
-                                        <?= htmlspecialchars($application['year_lvl_name']) ?>
-                                    </span>
-                                </td>
-                                <td class="p-4 text-ust-gray max-w-md">
-                                    <div class="leading-6 whitespace-pre-line">
-                                        <?= nl2br(htmlspecialchars($application['reason'])) ?>
-                                    </div>
-                                </td>
-                                <td class="p-4 text-ust-gray text-xs">
-                                    <?= date('M d, Y g:i A', strtotime($application['created_at'])) ?>
-                                </td>
-                                <td class="p-4">
-                                    <div class="flex items-center gap-2 flex-wrap">
-                                        <button
-                                            type="button"
-                                            class="application-action-btn flex items-center gap-1 px-3 py-1.5 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition"
-                                            data-action="approve"
-                                            data-applicationid="<?= $application['organizer_application_id'] ?>"
-                                        >
-                                            <i class="fas fa-check"></i>Approve
-                                        </button>
-                                        <button
-                                            type="button"
-                                            class="application-action-btn flex items-center gap-1 px-3 py-1.5 text-sm font-semibold text-white bg-red-500 hover:bg-red-600 rounded-lg transition"
-                                            data-action="reject"
-                                            data-applicationid="<?= $application['organizer_application_id'] ?>"
-                                        >
-                                            <i class="fas fa-times"></i>Reject
-                                        </button>
-                                    </div>
+            <div class="overflow-x-auto">
+                <table id="organizerApplicationsTable" class="min-w-full text-sm text-left" data-page-size="10">
+                    <thead class="bg-ust-light-bg border-b-2 border-ust-gold">
+                        <tr>
+                            <th class="p-4 font-semibold text-ust-dark">Applicant</th>
+                            <th class="p-4 font-semibold text-ust-dark">Email</th>
+                            <th class="p-4 font-semibold text-ust-dark">Year Level</th>
+                            <th class="p-4 font-semibold text-ust-dark">Reason</th>
+                            <th class="p-4 font-semibold text-ust-dark">Submitted</th>
+                            <th class="p-4 font-semibold text-ust-dark">Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody data-table-body>
+                        <?php if (!empty($pendingApplications)) : ?>
+                            <?php foreach($pendingApplications as $application) : ?>
+                                <tr class="border-b hover:bg-ust-cream/50 transition" data-table-row>
+                                    <td class="p-4 text-ust-dark font-semibold">
+                                        <?= htmlspecialchars($application['first_name'] . ' ' . $application['last_name']) ?>
+                                    </td>
+                                    <td class="p-4 text-ust-gray text-xs">
+                                        <?= htmlspecialchars($application['email']) ?>
+                                    </td>
+                                    <td class="p-4">
+                                        <span class="inline-block px-3 py-1 bg-ust-gold/10 text-ust-dark text-xs font-semibold rounded-full">
+                                            <?= htmlspecialchars($application['year_lvl_name']) ?>
+                                        </span>
+                                    </td>
+                                    <td class="p-4 text-ust-gray max-w-md">
+                                        <div class="leading-6 whitespace-pre-line">
+                                            <?= nl2br(htmlspecialchars($application['reason'])) ?>
+                                        </div>
+                                    </td>
+                                    <td class="p-4 text-ust-gray text-xs">
+                                        <?= date('M d, Y g:i A', strtotime($application['created_at'])) ?>
+                                    </td>
+                                    <td class="p-4">
+                                        <div class="flex items-center gap-2 flex-wrap">
+                                            <button
+                                                type="button"
+                                                class="application-action-btn flex items-center gap-1 px-3 py-1.5 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition"
+                                                data-action="approve"
+                                                data-applicationid="<?= $application['organizer_application_id'] ?>"
+                                            >
+                                                <i class="fas fa-check"></i>Approve
+                                            </button>
+                                            <button
+                                                type="button"
+                                                class="application-action-btn flex items-center gap-1 px-3 py-1.5 text-sm font-semibold text-white bg-red-500 hover:bg-red-600 rounded-lg transition"
+                                                data-action="reject"
+                                                data-applicationid="<?= $application['organizer_application_id'] ?>"
+                                            >
+                                                <i class="fas fa-times"></i>Reject
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else : ?>
+                            <tr>
+                                <td colspan="6" class="p-6 text-center text-ust-gray">
+                                    <i class="fas fa-inbox text-3xl mb-2 block opacity-50"></i>
+                                    No pending organizer applications right now.
                                 </td>
                             </tr>
-                        <?php endforeach; ?>
-                    <?php else : ?>
-                        <tr>
-                            <td colspan="6" class="p-6 text-center text-ust-gray">
-                                <i class="fas fa-inbox text-3xl mb-2 block opacity-50"></i>
-                                No pending organizer applications right now.
-                            </td>
-                        </tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+            <div id="applicationTablePagination" class="flex flex-col gap-3 border-t border-gray-100 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
+                <p data-pagination-status class="text-sm text-ust-gray"></p>
+                <div class="flex items-center gap-2">
+                    <button
+                        type="button"
+                        data-pagination-prev
+                        class="rounded-lg border-2 border-ust-gold px-4 py-2 text-sm font-semibold text-ust-gold transition hover:bg-ust-gold/5 disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-400 disabled:hover:bg-transparent"
+                    >
+                        Previous
+                    </button>
+                    <span data-pagination-pages class="min-w-[5rem] text-center text-sm font-semibold text-ust-dark"></span>
+                    <button
+                        type="button"
+                        data-pagination-next
+                        class="rounded-lg border-2 border-ust-gold px-4 py-2 text-sm font-semibold text-ust-gold transition hover:bg-ust-gold/5 disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-400 disabled:hover:bg-transparent"
+                    >
+                        Next
+                    </button>
+                </div>
+            </div>
         </section>
     </div>
         </main>
