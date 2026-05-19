@@ -40,7 +40,7 @@
 
                     <div>
                         <label for="email" class="block text-sm font-semibold text-ust-dark mb-2">
-                            Email Address
+                            Email Address <span class="text-red-600" aria-hidden="true">*</span>
                         </label>
                         <input 
                             type="email" 
@@ -55,7 +55,7 @@
                     <div>
                         <div class="flex items-center justify-between mb-2">
                             <label for="password" class="block text-sm font-semibold text-ust-dark">
-                                Password
+                                Password <span class="text-red-600" aria-hidden="true">*</span>
                             </label>
                             <a href="forgot-password.php" class="text-xs text-ust-gold hover:text-ust-gold-dark font-medium transition">
                                 Forgot password?

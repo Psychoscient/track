@@ -2,7 +2,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
             <label for="fname" class="block text-sm font-semibold text-ust-dark mb-2">
-                First Name
+                First Name <span class="text-red-600" aria-hidden="true">*</span>
             </label>
             <input
                 type="text"
@@ -17,7 +17,7 @@
 
         <div>
             <label for="lname" class="block text-sm font-semibold text-ust-dark mb-2">
-                Surname
+                Surname <span class="text-red-600" aria-hidden="true">*</span>
             </label>
             <input
                 type="text"
@@ -33,7 +33,7 @@
 
     <div>
         <label for="email" class="block text-sm font-semibold text-ust-dark mb-2">
-            Email Address
+            Email Address <span class="text-red-600" aria-hidden="true">*</span>
         </label>
         <input
             type="email"
@@ -47,7 +47,7 @@
 
     <div>
         <label for="password" class="block text-sm font-semibold text-ust-dark mb-2">
-            Password
+            Password <span class="text-red-600" aria-hidden="true">*</span>
         </label>
         <input
             type="password"
@@ -61,7 +61,7 @@
 
     <div>
         <label for="confirmPassword" class="block text-sm font-semibold text-ust-dark mb-2">
-            Confirm Password
+            Confirm Password <span class="text-red-600" aria-hidden="true">*</span>
         </label>
         <input
             type="password"
@@ -75,7 +75,7 @@
 
     <div>
         <label for="yearlvl" class="block text-sm font-semibold text-ust-dark mb-2">
-            Year Level
+            Year Level <span class="text-red-600" aria-hidden="true">*</span>
         </label>
         <select
             id="yearlvl"

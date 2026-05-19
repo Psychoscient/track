@@ -158,12 +158,12 @@
                 <div class="p-6 md:p-8">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div>
-                            <label for="title" class="block text-sm font-semibold text-ust-dark mb-2">Event Title</label>
+                            <label for="title" class="block text-sm font-semibold text-ust-dark mb-2">Event Title <span class="text-red-600" aria-hidden="true">*</span></label>
                             <input type="text" id="title" class="create-event-field w-full rounded-lg border-2 border-gray-200 px-4 py-3 text-sm text-ust-dark placeholder-gray-400 focus:border-ust-gold focus:ring-2 focus:ring-ust-gold/20 transition bg-ust-cream" placeholder="Enter event title">
                         </div>
 
                         <div>
-                            <label for="categoryID" class="block text-sm font-semibold text-ust-dark mb-2">Category</label>
+                            <label for="categoryID" class="block text-sm font-semibold text-ust-dark mb-2">Category <span class="text-red-600" aria-hidden="true">*</span></label>
                             <select id="categoryID" class="create-event-field w-full rounded-lg border-2 border-gray-200 bg-ust-cream px-4 py-3 text-sm text-ust-dark focus:border-ust-gold focus:ring-2 focus:ring-ust-gold/20 transition">
                                 <option value="">Choose Category</option>
                                 <?php foreach($categories as $category) : ?>
@@ -175,7 +175,7 @@
                         </div>
 
                         <div>
-                            <label for="eventVenueID" class="block text-sm font-semibold text-ust-dark mb-2">Venue</label>
+                            <label for="eventVenueID" class="block text-sm font-semibold text-ust-dark mb-2">Venue <span class="text-red-600" aria-hidden="true">*</span></label>
                             <select id="eventVenueID" class="create-event-field w-full rounded-lg border-2 border-gray-200 bg-ust-cream px-4 py-3 text-sm text-ust-dark focus:border-ust-gold focus:ring-2 focus:ring-ust-gold/20 transition">
                                 <option value="">Choose Venue</option>
                                 <?php foreach($venues as $venue) : ?>
@@ -196,17 +196,17 @@
                         </div>
 
                         <div>
-                            <label for="startDateTime" class="block text-sm font-semibold text-ust-dark mb-2">Start Date & Time</label>
+                            <label for="startDateTime" class="block text-sm font-semibold text-ust-dark mb-2">Start Date & Time <span class="text-red-600" aria-hidden="true">*</span></label>
                             <input type="datetime-local" id="startDateTime" class="create-event-field w-full rounded-lg border-2 border-gray-200 px-4 py-3 text-sm text-ust-dark focus:border-ust-gold focus:ring-2 focus:ring-ust-gold/20 transition bg-ust-cream">
                         </div>
 
                         <div>
-                            <label for="endDateTime" class="block text-sm font-semibold text-ust-dark mb-2">End Date & Time</label>
+                            <label for="endDateTime" class="block text-sm font-semibold text-ust-dark mb-2">End Date & Time <span class="text-red-600" aria-hidden="true">*</span></label>
                             <input type="datetime-local" id="endDateTime" class="create-event-field w-full rounded-lg border-2 border-gray-200 px-4 py-3 text-sm text-ust-dark focus:border-ust-gold focus:ring-2 focus:ring-ust-gold/20 transition bg-ust-cream">
                         </div>
 
                         <div class="md:col-span-2">
-                            <label for="statusID" class="block text-sm font-semibold text-ust-dark mb-2">Status</label>
+                            <label for="statusID" class="block text-sm font-semibold text-ust-dark mb-2">Status <span class="text-red-600" aria-hidden="true">*</span></label>
                             <select id="statusID" class="create-event-field w-full rounded-lg border-2 border-gray-200 bg-ust-cream px-4 py-3 text-sm text-ust-dark focus:border-ust-gold focus:ring-2 focus:ring-ust-gold/20 transition">
                                 <option value="">Choose Status</option>
                                 <?php foreach($statuses as $status) : ?>
@@ -218,7 +218,7 @@
                         </div>
 
                         <div class="md:col-span-2">
-                            <label for="description" class="block text-sm font-semibold text-ust-dark mb-2">Description</label>
+                            <label for="description" class="block text-sm font-semibold text-ust-dark mb-2">Description <span class="text-red-600" aria-hidden="true">*</span></label>
                             <div class="relative">
                                 <textarea id="description" maxlength="300" rows="5" class="create-event-field w-full rounded-lg border-2 border-gray-200 px-4 py-3 pb-9 text-sm text-ust-dark placeholder-gray-400 focus:border-ust-gold focus:ring-2 focus:ring-ust-gold/20 transition bg-ust-cream resize-none" placeholder="Describe the event, who it is for, and what attendees should expect."></textarea>
                                 <span id="descriptionCounter" class="pointer-events-none absolute bottom-3 left-4 text-xs font-semibold text-ust-gray">300 characters left</span>
@@ -421,12 +421,12 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div>
-                            <label for="edit_title" class="block text-sm font-semibold text-ust-dark mb-2">Event Title</label>
+                            <label for="edit_title" class="block text-sm font-semibold text-ust-dark mb-2">Event Title <span class="text-red-600" aria-hidden="true">*</span></label>
                             <input type="text" id="edit_title" class="edit-event-field w-full rounded-lg border-2 border-gray-200 px-4 py-3 text-sm text-ust-dark placeholder-gray-400 focus:border-ust-gold focus:ring-2 focus:ring-ust-gold/20 transition bg-ust-cream">
                         </div>
 
                         <div>
-                            <label for="edit_categoryID" class="block text-sm font-semibold text-ust-dark mb-2">Category</label>
+                            <label for="edit_categoryID" class="block text-sm font-semibold text-ust-dark mb-2">Category <span class="text-red-600" aria-hidden="true">*</span></label>
                             <select id="edit_categoryID" class="edit-event-field w-full rounded-lg border-2 border-gray-200 bg-ust-cream px-4 py-3 text-sm text-ust-dark focus:border-ust-gold focus:ring-2 focus:ring-ust-gold/20 transition">
                                 <option value="">Choose Category</option>
                                 <?php foreach($categories as $category) : ?>
@@ -438,7 +438,7 @@
                         </div>
 
                         <div>
-                            <label for="edit_eventVenueID" class="block text-sm font-semibold text-ust-dark mb-2">Venue</label>
+                            <label for="edit_eventVenueID" class="block text-sm font-semibold text-ust-dark mb-2">Venue <span class="text-red-600" aria-hidden="true">*</span></label>
                             <select id="edit_eventVenueID" class="edit-event-field w-full rounded-lg border-2 border-gray-200 bg-ust-cream px-4 py-3 text-sm text-ust-dark focus:border-ust-gold focus:ring-2 focus:ring-ust-gold/20 transition">
                                 <option value="">Choose Venue</option>
                                 <?php foreach($venues as $venue) : ?>
@@ -459,17 +459,17 @@
                         </div>
 
                         <div>
-                            <label for="edit_startDateTime" class="block text-sm font-semibold text-ust-dark mb-2">Start Date & Time</label>
+                            <label for="edit_startDateTime" class="block text-sm font-semibold text-ust-dark mb-2">Start Date & Time <span class="text-red-600" aria-hidden="true">*</span></label>
                             <input type="datetime-local" id="edit_startDateTime" class="edit-event-field w-full rounded-lg border-2 border-gray-200 px-4 py-3 text-sm text-ust-dark focus:border-ust-gold focus:ring-2 focus:ring-ust-gold/20 transition bg-ust-cream">
                         </div>
 
                         <div>
-                            <label for="edit_endDateTime" class="block text-sm font-semibold text-ust-dark mb-2">End Date & Time</label>
+                            <label for="edit_endDateTime" class="block text-sm font-semibold text-ust-dark mb-2">End Date & Time <span class="text-red-600" aria-hidden="true">*</span></label>
                             <input type="datetime-local" id="edit_endDateTime" class="edit-event-field w-full rounded-lg border-2 border-gray-200 px-4 py-3 text-sm text-ust-dark focus:border-ust-gold focus:ring-2 focus:ring-ust-gold/20 transition bg-ust-cream">
                         </div>
 
                         <div class="md:col-span-2">
-                            <label for="edit_statusID" class="block text-sm font-semibold text-ust-dark mb-2">Status</label>
+                            <label for="edit_statusID" class="block text-sm font-semibold text-ust-dark mb-2">Status <span class="text-red-600" aria-hidden="true">*</span></label>
                             <select id="edit_statusID" class="edit-event-field w-full rounded-lg border-2 border-gray-200 bg-ust-cream px-4 py-3 text-sm text-ust-dark focus:border-ust-gold focus:ring-2 focus:ring-ust-gold/20 transition">
                                 <option value="">Choose Status</option>
                                 <?php foreach($statuses as $status) : ?>
@@ -481,7 +481,7 @@
                         </div>
 
                         <div class="md:col-span-2">
-                            <label for="edit_description" class="block text-sm font-semibold text-ust-dark mb-2">Description</label>
+                            <label for="edit_description" class="block text-sm font-semibold text-ust-dark mb-2">Description <span class="text-red-600" aria-hidden="true">*</span></label>
                             <textarea id="edit_description" rows="5" class="edit-event-field w-full rounded-lg border-2 border-gray-200 px-4 py-3 text-sm text-ust-dark placeholder-gray-400 focus:border-ust-gold focus:ring-2 focus:ring-ust-gold/20 transition bg-ust-cream resize-none"></textarea>
                         </div>
                     </div>

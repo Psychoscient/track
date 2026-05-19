@@ -267,7 +267,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div>
                         <label for="fname" class="block text-sm font-semibold text-ust-dark mb-2">
-                            First Name
+                            First Name <span class="text-red-600" aria-hidden="true">*</span>
                         </label>
                         <input
                             type="text"
@@ -282,7 +282,7 @@
 
                     <div>
                         <label for="lname" class="block text-sm font-semibold text-ust-dark mb-2">
-                            Surname
+                            Surname <span class="text-red-600" aria-hidden="true">*</span>
                         </label>
                         <input
                             type="text"
@@ -297,7 +297,7 @@
 
                     <div class="md:col-span-2">
                         <label for="email" class="block text-sm font-semibold text-ust-dark mb-2">
-                            Email Address
+                            Email Address <span class="text-red-600" aria-hidden="true">*</span>
                         </label>
                         <input
                             type="email"
@@ -313,7 +313,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
                             <div>
                                 <label for="password" class="block text-sm font-semibold text-ust-dark mb-2">
-                                    Password
+                                    Password <span class="text-red-600" aria-hidden="true">*</span>
                                 </label>
                                 <input
                                     type="password"
@@ -326,7 +326,7 @@
                             </div>
                             <div>
                                 <label for="yearlvl" class="block text-sm font-semibold text-ust-dark mb-2">
-                                    Year Level
+                                    Year Level <span class="text-red-600" aria-hidden="true">*</span>
                                 </label>
                                 <select
                                     id="yearlvl"
@@ -344,7 +344,7 @@
                             </div>
                             <div>
                                 <label for="role" class="block text-sm font-semibold text-ust-dark mb-2">
-                                    Role
+                                    Role <span class="text-red-600" aria-hidden="true">*</span>
                                 </label>
                                 <select
                                     id="role"
@@ -779,7 +779,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div>
                         <label for="edit_fname" class="block text-sm font-semibold text-ust-dark mb-2">
-                            First Name
+                            First Name <span class="text-red-600" aria-hidden="true">*</span>
                         </label>
                         <input
                             type="text"
@@ -791,7 +791,7 @@
 
                     <div>
                         <label for="edit_lname" class="block text-sm font-semibold text-ust-dark mb-2">
-                            Surname
+                            Surname <span class="text-red-600" aria-hidden="true">*</span>
                         </label>
                         <input
                             type="text"
@@ -803,7 +803,7 @@
 
                     <div class="md:col-span-2">
                         <label for="edit_email" class="block text-sm font-semibold text-ust-dark mb-2">
-                            Email Address
+                            Email Address <span class="text-red-600" aria-hidden="true">*</span>
                         </label>
                         <input
                             type="email"
@@ -829,7 +829,7 @@
                             </div>
                             <div>
                                 <label for="edit_yearlvl" class="block text-sm font-semibold text-ust-dark mb-2">
-                                    Year Level
+                                    Year Level <span class="text-red-600" aria-hidden="true">*</span>
                                 </label>
                                 <select
                                     id="edit_yearlvl"
@@ -846,7 +846,7 @@
                             </div>
                             <div>
                                 <label for="edit_role" class="block text-sm font-semibold text-ust-dark mb-2">
-                                    Role
+                                    Role <span class="text-red-600" aria-hidden="true">*</span>
                                 </label>
                                 <select
                                     id="edit_role"

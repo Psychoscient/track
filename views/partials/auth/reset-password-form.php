@@ -4,7 +4,7 @@
 
     <div>
         <label for="newPassword" class="block text-sm font-semibold text-ust-dark mb-2">
-            New Password
+            New Password <span class="text-red-600" aria-hidden="true">*</span>
         </label>
         <input
             type="password"
@@ -18,7 +18,7 @@
 
     <div>
         <label for="confirmPassword" class="block text-sm font-semibold text-ust-dark mb-2">
-            Confirm Password
+            Confirm Password <span class="text-red-600" aria-hidden="true">*</span>
         </label>
         <input
             type="password"

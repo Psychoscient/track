@@ -177,7 +177,7 @@
 
                                     <div class="mt-6">
                                         <label for="organizerReason" class="block text-sm font-semibold text-ust-dark mb-2">
-                                            Reason for applying
+                                            Reason for applying <span class="text-red-600" aria-hidden="true">*</span>
                                         </label>
                                         <textarea
                                             id="organizerReason"
