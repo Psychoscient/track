@@ -273,6 +273,7 @@
                             type="text"
                             id="fname"
                             name="fname"
+                            maxlength="20"
                             required
                             placeholder="Enter first name"
                             class="input-field w-full rounded-lg border-2 border-gray-200 px-4 py-3 text-sm font-body text-ust-dark placeholder-gray-400 focus:border-ust-gold focus:ring-2 focus:ring-ust-gold/20 transition bg-ust-cream"
@@ -287,6 +288,7 @@
                             type="text"
                             id="lname"
                             name="lname"
+                            maxlength="20"
                             required
                             placeholder="Enter surname"
                             class="input-field w-full rounded-lg border-2 border-gray-200 px-4 py-3 text-sm font-body text-ust-dark placeholder-gray-400 focus:border-ust-gold focus:ring-2 focus:ring-ust-gold/20 transition bg-ust-cream"

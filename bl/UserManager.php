@@ -82,8 +82,14 @@
                 $user = $this -> userModel -> searchUser("email", $email);
 
                 // throw new InvalidArgumentException("Test validation error");
-                
-                if (!($this -> emailExists($email))) {
+
+                if (
+                    !$user ||
+                    (is_array($user) && isset($user['status']) && $user['status'] === false) ||
+                    !isset($user['password']) ||
+                    !is_string($user['password']) ||
+                    $user['password'] === ''
+                ) {
                     return [
                         "status" => false,
                         "message" => "Invalid email or password."
@@ -125,6 +131,20 @@
                     return [
                         "status" => false,
                         "message" => "Fill out all fields."
+                    ];
+                }
+
+                if (strlen($fname) > 20 || strlen($lname) > 20) {
+                    return [
+                        "status" => false,
+                        "message" => "No more than 20 characters."
+                    ];
+                }
+
+                if (strlen($password) < 8) {
+                    return [
+                        "status" => false,
+                        "message" => "Password must be at least 8 characters."
                     ];
                 }
 

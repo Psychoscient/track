@@ -3,6 +3,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const buttons = document.querySelectorAll('.dashboard-btn');
     const applicationButtons = document.querySelectorAll('.application-action-btn');
     const logoutBtn = document.getElementById('logout');
+    const createFname = document.getElementById('fname');
+    const createLname = document.getElementById('lname');
+    const createEmail = document.getElementById('email');
+    const createPassword = document.getElementById('password');
+    const createYearLevel = document.getElementById('yearlvl');
+    const createRole = document.getElementById('role');
+
+    Utils.keydown([createFname, createLname]);
 
     initializeManagedTable({
         tableId: 'userManagementTable',
@@ -33,16 +41,28 @@ document.addEventListener('DOMContentLoaded', function() {
 
         console.log('create');
 
+        const validation = validateCreateUser();
+        if (!validation.status) {
+            Swal.fire({
+                title: "Error!",
+                text: validation.message,
+                icon: "error",
+                confirmButtonText: "OK"
+            });
+
+            return;
+        }
+
         $.ajax({
             url: '../controllers/controller.php',
             type: 'POST',
             data: {
-                fname: document.getElementById('fname').value,
-                lname: document.getElementById('lname').value,
-                email: document.getElementById('email').value,
-                password: document.getElementById('password').value,
-                yearlvl: document.getElementById('yearlvl').value,
-                role: document.getElementById('role').value,
+                fname: createFname.value,
+                lname: createLname.value,
+                email: createEmail.value,
+                password: createPassword.value,
+                yearlvl: createYearLevel.value,
+                role: createRole.value,
                 action: 'create'
             },
             success: function(response) {
@@ -80,6 +100,47 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+
+    function validateCreateUser() {
+        const fname = createFname.value.trim();
+        const lname = createLname.value.trim();
+        const email = createEmail.value.trim();
+        const password = createPassword.value;
+        const yearlvl = createYearLevel.value;
+        const role = createRole.value;
+
+        if (!fname || !lname || !email || !password || !yearlvl || !role) {
+            return {
+                status: false,
+                message: "Fill out all fields."
+            };
+        }
+
+        if (fname.length > 20 || lname.length > 20) {
+            return {
+                status: false,
+                message: "No more than 20 characters."
+            };
+        }
+
+        if (password.length < 8) {
+            return {
+                status: false,
+                message: "Password must be at least 8 characters."
+            };
+        }
+
+        if (!Utils.isValidEmail(email)) {
+            return {
+                status: false,
+                message: "Invalid email format."
+            };
+        }
+
+        return {
+            status: true
+        };
+    }
 
     buttons.forEach((btn, index) => {
         btn.addEventListener('click', (e) => {
