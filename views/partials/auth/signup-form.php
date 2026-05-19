@@ -54,7 +54,8 @@
             id="password"
             name="password"
             required
-            placeholder="Create a password"
+            maxlength="25"
+            placeholder="Create a password (8-25 characters)"
             class="input-field w-full rounded-xl border-2 border-gray-200 px-4 py-3 text-sm font-body text-ust-dark placeholder-gray-400 focus:border-ust-gold focus:ring-2 focus:ring-ust-gold/20 transition bg-ust-cream"
         >
     </div>
@@ -68,6 +69,7 @@
             id="confirmPassword"
             name="confirmPassword"
             required
+            maxlength="25"
             placeholder="Confirm your password"
             class="input-field w-full rounded-xl border-2 border-gray-200 px-4 py-3 text-sm font-body text-ust-dark placeholder-gray-400 focus:border-ust-gold focus:ring-2 focus:ring-ust-gold/20 transition bg-ust-cream"
         >

@@ -109,6 +109,13 @@ const Utils = {
                 }
             }
 
+            if (parseInt(pass.value.length) > 25 || parseInt(confirmPasswordField.value.length) > 25) {
+                return {
+                    status: false,
+                    message: "Password must be no more than 25 characters."
+                }
+            }
+
             if (pass.value !== confirmPasswordField.value) {
                 return {
                     status: false,

@@ -11,6 +11,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
     Utils.keydown(fields);
 
+    function checkPasswordMatch() {
+        const pwd1 = password.value;
+        const pwd2 = confirmPassword.value;
+
+        if (pwd1 === '' && pwd2 === '') {
+            password.style.borderColor = '#e5e7eb';
+            confirmPassword.style.borderColor = '#e5e7eb';
+        } else if (pwd1 === pwd2 && pwd1 !== '') {
+            password.style.borderColor = '#22c55e';
+            confirmPassword.style.borderColor = '#22c55e';
+        } else if (pwd1 !== '' || pwd2 !== '') {
+            password.style.borderColor = '#ef4444';
+            confirmPassword.style.borderColor = '#ef4444';
+        }
+    }
+
+    password.addEventListener('input', checkPasswordMatch);
+    confirmPassword.addEventListener('input', checkPasswordMatch);
+
     submit.addEventListener('click', function(e) {
         e.preventDefault();
 

@@ -384,6 +384,14 @@
                         exit; 
                     }
 
+                    if (strlen($input['password']) > 25 || strlen($input['confirmPassword']) > 25) {
+                        echo json_encode([
+                            "status" => false,
+                            "message" => "Password must be no more than 25 characters."
+                        ]);
+                        exit;
+                    }
+
                     if ($input['password'] !== $input['confirmPassword']) {
                         echo json_encode([
                             "status" => false,
